@@ -43,3 +43,80 @@ def get_niftyindices_history(
         return history_data.to_dict(orient='records')
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching historical data: {e}")
+    
+
+def index_pe_pb_div(symbol,start_date,end_date):
+    data = "{'name':'"+symbol+"','startDate':'"+start_date+"','endDate':'"+end_date+"'}"
+    payload = requests.post('https://niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', headers=niftyindices_headers,  data=data).json()
+    payload = json.loads(payload["d"])
+    payload=pd.DataFrame.from_records(payload)
+    return payload
+
+
+@router.get("/niftyindices/ratios")
+def get_niftyindices_ratios(
+    symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
+    start_date: str = Query(..., title="Start Date", description="Start date for historical data"),
+    end_date: str = Query(..., title="End Date", description="End date for historical data")
+):
+    try:
+        historical_ratios_data = index_pe_pb_div(symbol, start_date, end_date)
+        return historical_ratios_data.to_dict(orient='records')
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
+    
+
+def download_index_dashboard_report(month: str, year: str):
+    url = f"https://www.niftyindices.com/Index_Dashboard/Index_Dashboard_{month.upper()}{year}.pdf"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status() 
+
+        with open(f"Index_Dashboard_{month.upper()}{year}.pdf", "wb") as pdf_file:
+            pdf_file.write(response.content)
+
+        return {"message": f"Report downloaded successfully for {month} {year}"}
+
+    except requests.exceptions.HTTPError as errh:
+        raise HTTPException(status_code=errh.response.status_code, detail=f"HTTP error: {errh}")
+
+    except requests.exceptions.RequestException as err:
+        raise HTTPException(status_code=500, detail=f"Request error: {err}")
+    
+
+@router.get("/niftyindices/report/download")
+def download_niftyindices_report(
+    month: str = Query(..., title="Month", description="Month for the report"),
+    year: str = Query(..., title="Year", description="Year for the report")
+):
+    try:
+        download_result = download_index_dashboard_report(month, year)
+        return download_result
+
+    except HTTPException as exc:
+        raise exc
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error downloading report: {e}")
+    
+
+def index_total_returns(symbol,start_date,end_date):
+    data = "{'name':'"+symbol+"','startDate':'"+start_date+"','endDate':'"+end_date+"'}"
+    payload = requests.post('https://niftyindices.com/Backpage.aspx/getTotalReturnIndexString', headers=niftyindices_headers,  data=data).json()
+    payload = json.loads(payload["d"])
+    payload=pd.DataFrame.from_records(payload)
+    return payload
+
+
+@router.get("/niftyindices/returns")
+def get_niftyindices_returns(
+    symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
+    start_date: str = Query(..., title="Start Date", description="Start date for historical data"),
+    end_date: str = Query(..., title="End Date", description="End date for historical data")
+):
+    try:
+        historical_returns_data = index_total_returns(symbol, start_date, end_date)
+        return historical_returns_data.to_dict(orient='records')
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
