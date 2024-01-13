@@ -68,45 +68,6 @@ def get_niftyindices_ratios(
         raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
     
 
-def download_index_dashboard_report(month: str, year: str):
-    url = f"https://www.niftyindices.com/Index_Dashboard/Index_Dashboard_{month.upper()}{year}.pdf"
-
-    try:
-        response = requests.get(url)
-        response.raise_for_status() 
-
-        with open(f"Index_Dashboard_{month.upper()}{year}.pdf", "wb") as pdf_file:
-            pdf_file.write(response.content)
-
-        return {"message": f"Report downloaded successfully for {month} {year}"}
-
-    except requests.exceptions.HTTPError as errh:
-        logging.error(f"HTTP error: {errh}")
-        raise HTTPException(status_code=errh.response.status_code, detail=f"HTTP error: {errh}")
-
-    except requests.exceptions.RequestException as err:
-        logging.error(f"Request error: {err}")
-        raise HTTPException(status_code=500, detail=f"Request error: {err}")
-    
-
-@router.get("/niftyindices/report/download")
-def download_niftyindices_report(
-    month: str = Query(..., title="Month", description="Month for the report"),
-    year: str = Query(..., title="Year", description="Year for the report")
-):
-    try:
-        download_result = download_index_dashboard_report(month, year)
-        return download_result
-
-    except HTTPException as exc:
-        logging.error(f"HTTPException: {exc}")
-        raise exc
-
-    except Exception as e:
-        logging.error(f"Error downloading report: {e}")
-        raise HTTPException(status_code=500, detail=f"Error downloading report: {e}")
-    
-
 def index_total_returns(symbol,start_date,end_date):
     data = "{'name':'"+symbol+"','startDate':'"+start_date+"','endDate':'"+end_date+"'}"
     payload = requests.post('https://niftyindices.com/Backpage.aspx/getTotalReturnIndexString', headers=niftyindices_headers,  data=data).json()
