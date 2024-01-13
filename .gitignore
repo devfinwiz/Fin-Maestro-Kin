@@ -7,10 +7,6 @@ __pycache__/
 # Ignore virtual environment
 venv/
 
-# Ignore poetry generated files
-poetry.lock
-pyproject.toml
-
 # Ignore local development files
 .vscode/
 *.sublime*
