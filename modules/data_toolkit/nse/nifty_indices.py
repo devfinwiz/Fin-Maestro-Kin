@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 import requests
 import json
 import pandas as pd
+import logging
 
 router = APIRouter()
 
@@ -43,3 +44,47 @@ def get_niftyindices_history(
         return history_data.to_dict(orient='records')
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching historical data: {e}")
+    
+
+def index_pe_pb_div(symbol,start_date,end_date):
+    data = "{'name':'"+symbol+"','startDate':'"+start_date+"','endDate':'"+end_date+"'}"
+    payload = requests.post('https://niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', headers=niftyindices_headers,  data=data).json()
+    payload = json.loads(payload["d"])
+    payload=pd.DataFrame.from_records(payload)
+    return payload
+
+
+#Example usage - #Example usage - 127.0.0.1:8000/niftyindices/ratios?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
+@router.get("/niftyindices/ratios")
+def get_niftyindices_ratios(
+    symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
+    start_date: str = Query(..., title="Start Date", description="Start date for historical data"),
+    end_date: str = Query(..., title="End Date", description="End date for historical data")
+):
+    try:
+        historical_ratios_data = index_pe_pb_div(symbol, start_date, end_date)
+        return historical_ratios_data.to_dict(orient='records')
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
+    
+
+def index_total_returns(symbol,start_date,end_date):
+    data = "{'name':'"+symbol+"','startDate':'"+start_date+"','endDate':'"+end_date+"'}"
+    payload = requests.post('https://niftyindices.com/Backpage.aspx/getTotalReturnIndexString', headers=niftyindices_headers,  data=data).json()
+    payload = json.loads(payload["d"])
+    payload=pd.DataFrame.from_records(payload)
+    return payload
+
+
+#Example usage - 127.0.0.1:8000/niftyindices/returns?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
+@router.get("/niftyindices/returns")
+def get_niftyindices_returns(
+    symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
+    start_date: str = Query(..., title="Start Date", description="Start date for historical data"),
+    end_date: str = Query(..., title="End Date", description="End date for historical data")
+):
+    try:
+        historical_returns_data = index_total_returns(symbol, start_date, end_date)
+        return historical_returns_data.to_dict(orient='records')
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
