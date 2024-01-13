@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 import requests
 import json
 import pandas as pd
+import logging
 
 router = APIRouter()
 
@@ -53,6 +54,7 @@ def index_pe_pb_div(symbol,start_date,end_date):
     return payload
 
 
+#Example usage - #Example usage - 127.0.0.1:8000/niftyindices/ratios?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
 @router.get("/niftyindices/ratios")
 def get_niftyindices_ratios(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
@@ -79,9 +81,11 @@ def download_index_dashboard_report(month: str, year: str):
         return {"message": f"Report downloaded successfully for {month} {year}"}
 
     except requests.exceptions.HTTPError as errh:
+        logging.error(f"HTTP error: {errh}")
         raise HTTPException(status_code=errh.response.status_code, detail=f"HTTP error: {errh}")
 
     except requests.exceptions.RequestException as err:
+        logging.error(f"Request error: {err}")
         raise HTTPException(status_code=500, detail=f"Request error: {err}")
     
 
@@ -95,9 +99,11 @@ def download_niftyindices_report(
         return download_result
 
     except HTTPException as exc:
+        logging.error(f"HTTPException: {exc}")
         raise exc
 
     except Exception as e:
+        logging.error(f"Error downloading report: {e}")
         raise HTTPException(status_code=500, detail=f"Error downloading report: {e}")
     
 
@@ -109,6 +115,7 @@ def index_total_returns(symbol,start_date,end_date):
     return payload
 
 
+#Example usage - 127.0.0.1:8000/niftyindices/returns?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
 @router.get("/niftyindices/returns")
 def get_niftyindices_returns(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
