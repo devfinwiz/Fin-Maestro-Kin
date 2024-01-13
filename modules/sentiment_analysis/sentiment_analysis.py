@@ -32,7 +32,7 @@ def pcr_indice_analysis():
             pcr_value = pcr_indice_scraper(symbol)
         except Exception as e:
             print(f"Error fetching PCR for {symbol}: {e}")
-            continue
+            return {"error": f"Failed to fetch PCR for {symbol}"}
 
         state = get_state(pcr_value, [1.4, 1.19, 1, 0.91, 0.6])
         pcr_anal_result[symbol] = [state, pcr_value]
