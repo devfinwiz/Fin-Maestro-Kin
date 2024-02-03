@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, Query
 import requests
 import json
 import pandas as pd
-import logging
 
 router = APIRouter()
 
