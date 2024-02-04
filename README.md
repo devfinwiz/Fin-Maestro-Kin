@@ -14,8 +14,8 @@
   <a href="">
     <img src="https://img.shields.io/badge/Python-3.9.1-blue&?style=for-the-badge&color=blue">
   </a>
-  <a href="https://github.com/devfinwiz/Fin-Maestro/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/devfinwiz/Fin-Maestro-Kin?color=maroon&style=for-the-badge">
+  <a href="https://github.com/devfinwiz/Fin-Maestro-Kin/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/devfinwiz/Fin-Maestro-Kin?color=maroon&style=for-the-badgee">
   </a>
   <a href="https://github.com/devfinwiz/Fin-Maestro-Kin/commits/master">
     <img src="https://img.shields.io/github/last-commit/devfinwiz/Fin-Maestro-Kin?color=yellow&style=for-the-badge">
