@@ -1,22 +1,5 @@
-from fastapi import APIRouter, HTTPException, Query
 import requests
 import json
-from pydantic import BaseModel
-
-router = APIRouter()
-
-#Example Usgae - http://127.0.0.1:8000/indice_pcr?symbol=NIFTY
-@router.get("/indice_pcr")
-def get_pcr(symbol: str = Query(..., title="Symbol", description="Indice symbol")):
-    pcr_value = pcr_indice_scraper(symbol)
-    return {"symbol": symbol, "pcr_value": pcr_value}
-
-
-#Example usage - http://127.0.0.1:8000/stock_pcr?symbol=RELIANCE
-@router.get("/stock_pcr")
-def get_pcr(symbol: str = Query(..., title="Symbol", description="Stock symbol")):
-    pcr_value = pcr_stocks_scraper(symbol)
-    return {"symbol": symbol, "pcr_value": pcr_value}
 
 
 def pcr_indice_scraper(symbol):
