@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fin-maestro-kin"
-version = "0.1.2"
+version = "0.1.3"
 description = "FastAPI for Fin-Maestro: Empowering traders & investors with advanced research tools and real-time sentiment analysis."
 authors = ["DEV_FINWIZ <devjuneja43@gmail.com>"]
 license = "MIT"
