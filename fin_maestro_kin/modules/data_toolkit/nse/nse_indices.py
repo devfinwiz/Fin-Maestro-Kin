@@ -1,4 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
+from modules.data_toolkit.nse.helper import fetch_data_from_nse, convert_dataframe_to_dict
+from fastapi.responses import JSONResponse
 import requests
 import json
 import pandas as pd
@@ -35,8 +37,8 @@ def index_history(symbol, start_date, end_date):
 @router.get("/niftyindices/history")
 def get_niftyindices_history(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
-    start_date: str = Query(..., title="Start Date", description="Start date for historical data"),
-    end_date: str = Query(..., title="End Date", description="End date for historical data")
+    start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
+    end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
 ):
     try:
         history_data = index_history(symbol, start_date, end_date)
@@ -57,8 +59,8 @@ def index_pe_pb_div(symbol,start_date,end_date):
 @router.get("/niftyindices/ratios")
 def get_niftyindices_ratios(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
-    start_date: str = Query(..., title="Start Date", description="Start date for historical data"),
-    end_date: str = Query(..., title="End Date", description="End date for historical data")
+    start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
+    end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
 ):
     try:
         historical_ratios_data = index_pe_pb_div(symbol, start_date, end_date)
@@ -79,8 +81,8 @@ def index_total_returns(symbol,start_date,end_date):
 @router.get("/niftyindices/returns")
 def get_niftyindices_returns(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
-    start_date: str = Query(..., title="Start Date", description="Start date for historical data"),
-    end_date: str = Query(..., title="End Date", description="End date for historical data")
+    start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
+    end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
 ):
     try:
         historical_returns_data = index_total_returns(symbol, start_date, end_date)
@@ -115,3 +117,29 @@ def pcr_indice_scraper(symbol):
     pcr = totPE / totCE
     return round(pcr, 3)
 
+
+def india_vix_history(start_date, end_date):
+    base_url="https://www.nseindia.com/api/historical/vixhistory"
+    customized_request_url = f"{base_url}?from={start_date}&to={end_date}"
+    response=fetch_data_from_nse(customized_request_url)
+    
+    payload = response.get('data', [])
+    
+    if not payload:
+        raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
+    
+    return pd.DataFrame(payload)
+
+
+# Example usage - http://localhost:8000/niftyindices/india-vix?start_date=28-01-2024&end_date=04-02-2024
+@router.get("/niftyindices/india-vix")
+def get_india_vix_history(
+    start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
+):
+    try:
+        historical_data = india_vix_history(start_date, end_date)
+        rounded_data = convert_dataframe_to_dict(historical_data)
+        return JSONResponse(content={"data": rounded_data})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching India Vix historical data: {e}")

@@ -1,37 +1,12 @@
 from fastapi import APIRouter, HTTPException, Query
+from modules.data_toolkit.nse.helper import fetch_data_from_nse, convert_dataframe_to_dict, transform_financial_year
+from fastapi.responses import JSONResponse
 import requests
 import pandas as pd
-from fastapi.responses import JSONResponse
 import re
-import math
-from datetime import datetime
 import json
 
 router = APIRouter()
-
-headers = {
-    'Connection': 'keep-alive',
-    'Cache-Control': 'max-age=0',
-    'DNT': '1',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36',
-    'Sec-Fetch-User': '?1',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'Sec-Fetch-Site': 'none',
-    'Sec-Fetch-Mode': 'navigate',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Accept-Language': 'en-US,en;q=0.9,hi;q=0.8',
-}
-
-
-def fetch_data_from_nse(payload):
-    try:
-        result = requests.get(payload, headers=headers).json()
-    except ValueError:
-        session = requests.Session()
-        result = session.get("http://nseindia.com", headers=headers)
-        result = session.get(payload, headers=headers).json()
-    return result
 
     
 def security_wise_archive(symbol, start_date, end_date, series="ALL"):   
@@ -47,26 +22,12 @@ def security_wise_archive(symbol, start_date, end_date, series="ALL"):
     return pd.DataFrame(payload)
 
 
-# Convert DataFrame to dictionary with special handling for float values
-def convert_dataframe_to_dict(df):
-    df_dict = df.to_dict(orient='records')
-    for record in df_dict:
-        for key, value in record.items():
-            if isinstance(value, float):
-                if pd.notna(value) and math.isfinite(value):
-                    record[key] = round(value, 2)
-                else:
-                    record[key] = str(value)
-    return df_dict
-
-
-
 # Example usage - http://localhost:8000/equities/security-archives?symbol=TCS&start_date=04-01-2024&end_date=14-01-2024&series=ALL
 @router.get("/equities/security-archives")
 def get_security_wise_archive(
     symbol: str = Query(..., title="Symbol", description="Stock symbol"),
-    start_date: str = Query(..., title="From Date", description="Start date for historical data"),
-    end_date: str = Query(..., title="To Date", description="End date for historical data"),
+    start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),
     series: str = Query("ALL", title="Series", description="Stock series")
 ):
     try:
@@ -93,8 +54,8 @@ def bulk_deals_archives(start_date, end_date):
 # Example usage - http://localhost:8000/equities/bulk-deals-archives?start_date=28-01-2024&end_date=04-02-2024
 @router.get("/equities/bulk-deals-archives")
 def get_bulk_deals_archives(
-    start_date: str = Query(..., title="From Date", description="Start date for historical data"),
-    end_date: str = Query(..., title="To Date", description="End date for historical data"),  
+    start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
 ):
     try:
         historical_data = bulk_deals_archives(start_date, end_date)
@@ -103,7 +64,7 @@ def get_bulk_deals_archives(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching bulk-deals archive data: {e}")
     
-
+    
 def block_deals_archives(start_date, end_date):
     base_url="https://www.nseindia.com/api/historical/block-deals"
     customized_request_url = f"{base_url}?from={start_date}&to={end_date}"
@@ -120,8 +81,8 @@ def block_deals_archives(start_date, end_date):
 # Example usage - http://localhost:8000/equities/block-deals-archives?start_date=28-01-2024&end_date=04-02-2024
 @router.get("/equities/block-deals-archives")
 def get_block_deals_archives(
-    start_date: str = Query(..., title="From Date", description="Start date for historical data"),
-    end_date: str = Query(..., title="To Date", description="End date for historical data"),  
+    start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
 ):
     try:
         historical_data = block_deals_archives(start_date, end_date)
@@ -147,8 +108,8 @@ def short_selling_archives(start_date, end_date):
 #Example usage - http://localhost:8000/equities/short-selling?start_date=28-01-2024&end_date=04-02-2024
 @router.get("/equities/short-selling-archives")
 def get_short_selling_archives(
-    start_date: str = Query(..., title="From Date", description="Start date for historical data"),
-    end_date: str = Query(..., title="To Date", description="End date for historical data"),  
+    start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
 ):
     try:
         historical_data = short_selling_archives(start_date, end_date)
@@ -157,7 +118,38 @@ def get_short_selling_archives(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching short-selling archive data: {e}")
     
+
+def corporate_actions(start_date, end_date):
+    base_url = "https://www.nseindia.com/api/corporates-corporateActions"
     
+    customized_request_url = f"{base_url}?index=equities&from={start_date}&to={end_date}"
+    response = fetch_data_from_nse(customized_request_url)
+    
+    if not response:
+        raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
+    
+    if isinstance(response, list):
+        payload = response
+    else:
+        payload = response.get('data', [])
+    
+    return pd.DataFrame(payload)
+    
+
+# Example usage - http://localhost:8000/equities/corporate-actions?start_date=28-01-2024&end_date=04-02-2024
+@router.get("/equities/corporate-actions")
+def get_corporate_actions(
+    start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
+):
+    try:
+        historical_data = corporate_actions(start_date, end_date)
+        rounded_data = convert_dataframe_to_dict(historical_data)
+        return JSONResponse(content={"data": rounded_data})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching corporate actions data: {e}")
+    
+
 def nse_monthly_most_active_securities():
     request_url = "https://www.nseindia.com/api/historical/most-active-securities-monthly"
     response = fetch_data_from_nse(request_url)
@@ -209,7 +201,6 @@ def get_nse_monthly_advances_and_declines(
         raise HTTPException(status_code=500, detail=f"Error fetching advances and decline data: {e}")
     
     
-
 def nse_capital_market_monthly_settlement_stats(financial_year):
     base_url = "https://www.nseindia.com/api/historical/monthly-sett-stats-data"
     customized_request_url = f"{base_url}?finYear={financial_year}"
@@ -238,18 +229,6 @@ def get_nse_capital_market_monthly_settlement_stats(
         raise HTTPException(status_code=500, detail=f"Error fetching monthly settlement statistics for capital market: {e}")
 
 
-def transform_financial_year(financial_year):
-    start_year, end_year = map(int, financial_year.split('-'))
-
-    start_date = datetime(start_year, 4, 1)
-    end_date = datetime(end_year + 1, 3, 31) 
-
-    from_date_str = start_date.strftime("%b-%Y")
-    to_date_str = end_date.strftime("%b-%Y")
-
-    return from_date_str, to_date_str
-
-
 def nse_fno_monthly_settlement_stats(financial_year):
     from_date, to_date = transform_financial_year(financial_year)
     base_url = "https://www.nseindia.com/api/financial-monthlyStats"
@@ -261,7 +240,6 @@ def nse_fno_monthly_settlement_stats(financial_year):
         raise HTTPException(status_code=404, detail="No monthly settlement statistics found.")
     
     return pd.DataFrame(payload)
-
 
 
 #Example usage - http://localhost:8000/equities/monthly-settlement-stats/fno?financial_year=2022-2023
