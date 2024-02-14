@@ -34,3 +34,19 @@
 | Join/Read the Community Discussion | Raise an Issue about a Problem | Get Help about Usage | Contribute With New Features
 
 ![](https://i.imgur.com/waxVImv.png)
+
+### 🚀 Introducing [Fin-Maestro-Kin](https://github.com/devfinwiz/Fin-Maestro-Kin):
+   Our new all-in-one finance API, designed to revolutionize financial data analysis and processing.
+  
+   ✔ Seamlessly fetch historical data, analyze market trends, and evaluate sentiment with ease.
+   
+   ⚡ Empowered with FastAPI brilliance, offering lightning-fast performance and scalability.
+   
+   📦 Publish your own financial applications powered by Fin-Maestro-Kin and witness unparalleled insights into the market.
+   
+   🌟 To get started, install Fin-Maestro-Kin with:
+      ```
+      pip install fin-maestro-kin
+      ```
+   
+   🔗 [View Fin-Maestro-Kin on PyPI](https://pypi.org/project/fin-maestro-kin/)
