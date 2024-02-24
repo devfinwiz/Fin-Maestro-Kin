@@ -10,7 +10,7 @@ import warnings
 warnings.filterwarnings("ignore")
 initial, end = dt.date.today() - dt.timedelta(days=374), dt.date.today()
 
-router = APIRouter(tags=["Generateplot"])
+router = APIRouter(tags=["Trend Detector"])
 
 
 #Example usage - http://127.0.0.1:8000/generate_plot?ticker=BSE.NS
