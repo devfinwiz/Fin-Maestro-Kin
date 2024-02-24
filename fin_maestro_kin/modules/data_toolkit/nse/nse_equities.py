@@ -6,7 +6,7 @@ import pandas as pd
 import re
 import json
 
-router = APIRouter()
+router = APIRouter(tags=["Equities"])
 
     
 def security_wise_archive(symbol, start_date, end_date, series="ALL"):   
@@ -23,7 +23,7 @@ def security_wise_archive(symbol, start_date, end_date, series="ALL"):
 
 
 # Example usage - http://localhost:8000/equities/security-archives?symbol=TCS&start_date=04-01-2024&end_date=14-01-2024&series=ALL
-@router.get("/equities/security-archives")
+@router.get("/equities/security-archives",tags=["Equities"])
 def get_security_wise_archive(
     symbol: str = Query(..., title="Symbol", description="Stock symbol"),
     start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
@@ -52,7 +52,7 @@ def bulk_deals_archives(start_date, end_date):
 
 
 # Example usage - http://localhost:8000/equities/bulk-deals-archives?start_date=28-01-2024&end_date=04-02-2024
-@router.get("/equities/bulk-deals-archives")
+@router.get("/equities/bulk-deals-archives",tags=["Equities"])
 def get_bulk_deals_archives(
     start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
     end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
@@ -79,7 +79,7 @@ def block_deals_archives(start_date, end_date):
 
 
 # Example usage - http://localhost:8000/equities/block-deals-archives?start_date=28-01-2024&end_date=04-02-2024
-@router.get("/equities/block-deals-archives")
+@router.get("/equities/block-deals-archives",tags=["Equities"])
 def get_block_deals_archives(
     start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
     end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
@@ -106,7 +106,7 @@ def short_selling_archives(start_date, end_date):
 
 
 #Example usage - http://localhost:8000/equities/short-selling?start_date=28-01-2024&end_date=04-02-2024
-@router.get("/equities/short-selling-archives")
+@router.get("/equities/short-selling-archives",tags=["Equities"])
 def get_short_selling_archives(
     start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
     end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
@@ -137,7 +137,7 @@ def corporate_actions(start_date, end_date):
     
 
 # Example usage - http://localhost:8000/equities/corporate-actions?start_date=28-01-2024&end_date=04-02-2024
-@router.get("/equities/corporate-actions")
+@router.get("/equities/corporate-actions",tags=["Equities"])
 def get_corporate_actions(
     start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
     end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
@@ -162,7 +162,7 @@ def nse_monthly_most_active_securities():
     
 
 # Example usage - http://localhost:8000/equities/most-active-securities
-@router.get("/equities/most-active-securities")
+@router.get("/equities/most-active-securities",tags=["Equities"])
 def get_nse_monthly_most_active_securities():
     try:
         historical_data = nse_monthly_most_active_securities()
@@ -186,7 +186,7 @@ def nse_monthly_advances_and_declines(year):
 
 
 #Example usage - http://localhost:8000/equities/advances-declines?year=2024
-@router.get("/equities/advances-declines")
+@router.get("/equities/advances-declines",tags=["Equities"])
 def get_nse_monthly_advances_and_declines(
     year: str = Query(..., title="Year", description="Year for historical data in format YYYY"), 
 ):
@@ -214,7 +214,7 @@ def nse_capital_market_monthly_settlement_stats(financial_year):
 
 
 #Example usage - http://localhost:8000/equities/monthly-settlement-stats/capital-market?financial_year=2022-2023
-@router.get("/equities/monthly-settlement-stats/capital-market")
+@router.get("/equities/monthly-settlement-stats/capital-market",tags=["Equities"])
 def get_nse_capital_market_monthly_settlement_stats(
     financial_year: str = Query(..., title="Year", description="Financial Year for historical data in format YYYY-YYYY"), 
 ):
@@ -243,7 +243,7 @@ def nse_fno_monthly_settlement_stats(financial_year):
 
 
 #Example usage - http://localhost:8000/equities/monthly-settlement-stats/fno?financial_year=2022-2023
-@router.get("/equities/monthly-settlement-stats/fno")
+@router.get("/equities/monthly-settlement-stats/fno",tags=["Equities"])
 def get_nse_fno_monthly_settlement_stats(
     financial_year: str = Query(..., title="Year", description="Financial Year for historical data in format YYYY-YYYY"), 
 ):
@@ -282,7 +282,7 @@ def pcr_stocks_scraper(symbol):
 
 
 #Example usage - http://127.0.0.1:8000/equities/stock-pcr?symbol=RELIANCE
-@router.get("/equities/stock-pcr")
+@router.get("/equities/stock-pcr",tags=["Equities"])
 def get_pcr(symbol: str = Query(..., title="Symbol", description="Stock symbol")):
     pcr_value = pcr_stocks_scraper(symbol)
     return {"symbol": symbol, "pcr_value": pcr_value}
