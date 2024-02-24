@@ -5,7 +5,7 @@ import requests
 import json
 import pandas as pd
 
-router = APIRouter()
+router = APIRouter(tags=["Nifty Indices"])
 
 niftyindices_headers = {
     'Connection': 'keep-alive',
@@ -34,7 +34,7 @@ def index_history(symbol, start_date, end_date):
 
 
 #Example usage - 127.0.0.1:8000/niftyindices/history?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
-@router.get("/niftyindices/history")
+@router.get("/niftyindices/history",tags=["Nifty Indices"])
 def get_niftyindices_history(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
     start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
@@ -56,7 +56,7 @@ def index_pe_pb_div(symbol,start_date,end_date):
 
 
 #Example usage - #Example usage - 127.0.0.1:8000/niftyindices/ratios?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
-@router.get("/niftyindices/ratios")
+@router.get("/niftyindices/ratios",tags=["Nifty Indices"])
 def get_niftyindices_ratios(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
     start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
@@ -78,7 +78,7 @@ def index_total_returns(symbol,start_date,end_date):
 
 
 #Example usage - 127.0.0.1:8000/niftyindices/returns?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
-@router.get("/niftyindices/returns")
+@router.get("/niftyindices/returns",tags=["Nifty Indices"])
 def get_niftyindices_returns(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
     start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
@@ -92,7 +92,7 @@ def get_niftyindices_returns(
     
     
 #Example Usgae - http://127.0.0.1:8000/niftyindices/indice-pcr?symbol=NIFTY
-@router.get("/niftyindices/indice-pcr")
+@router.get("/niftyindices/indice-pcr",tags=["Nifty Indices"])
 def get_pcr(
     symbol: str = Query(..., title="Symbol", description="Indice symbol")
 ):
@@ -132,7 +132,7 @@ def india_vix_history(start_date, end_date):
 
 
 # Example usage - http://localhost:8000/niftyindices/india-vix?start_date=28-01-2024&end_date=04-02-2024
-@router.get("/niftyindices/india-vix")
+@router.get("/niftyindices/india-vix",tags=["Nifty Indices"])
 def get_india_vix_history(
     start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
     end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  

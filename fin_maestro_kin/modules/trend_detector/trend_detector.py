@@ -10,7 +10,7 @@ import warnings
 warnings.filterwarnings("ignore")
 initial, end = dt.date.today() - dt.timedelta(days=374), dt.date.today()
 
-router = APIRouter()
+router = APIRouter(tags=["Generateplot"])
 
 
 #Example usage - http://127.0.0.1:8000/generate_plot?ticker=BSE.NS
@@ -45,7 +45,7 @@ def signals_generator(ticker, num_of_signals):
     return fig
 
 
-@router.get("/generate_plot")
+@router.get("/generate_plot",tags=["Trend Detector"])
 async def generate_plot(ticker: str = Query(..., title="Ticker", description="Stock ticker symbol"),
                         num_of_signals: int = Query(10, title="Num of Signals", description="Number of buy/sell signals to be plotted")):
     fig = signals_generator(ticker, num_of_signals)
