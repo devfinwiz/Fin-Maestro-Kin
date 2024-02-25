@@ -5,7 +5,7 @@ import requests
 import json
 import pandas as pd
 
-router = APIRouter(tags=["Nifty Indices"])
+router = APIRouter(tags=["NSE Indices"])
 
 niftyindices_headers = {
     'Connection': 'keep-alive',
@@ -33,9 +33,9 @@ def index_history(symbol, start_date, end_date):
     return payload
 
 
-#Example usage - 127.0.0.1:8000/niftyindices/history?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
-@router.get("/niftyindices/history",tags=["Nifty Indices"])
-def get_niftyindices_history(
+#Example usage - 127.0.0.1:8000/nseindices/history?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
+@router.get("/nseindices/history",tags=["NSE Indices"])
+def get_nse_indices_history(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
     start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
     end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
@@ -55,9 +55,9 @@ def index_pe_pb_div(symbol,start_date,end_date):
     return payload
 
 
-#Example usage - #Example usage - 127.0.0.1:8000/niftyindices/ratios?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
-@router.get("/niftyindices/ratios",tags=["Nifty Indices"])
-def get_niftyindices_ratios(
+#Example usage - #Example usage - 127.0.0.1:8000/nseindices/ratios?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
+@router.get("/nseindices/ratios",tags=["NSE Indices"])
+def get_nse_indices_ratios(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
     start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
     end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
@@ -77,9 +77,9 @@ def index_total_returns(symbol,start_date,end_date):
     return payload
 
 
-#Example usage - 127.0.0.1:8000/niftyindices/returns?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
-@router.get("/niftyindices/returns",tags=["Nifty Indices"])
-def get_niftyindices_returns(
+#Example usage - 127.0.0.1:8000/nseindices/returns?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
+@router.get("/nseindices/returns",tags=["NSE Indices"])
+def get_nse_indices_returns(
     symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
     start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
     end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
@@ -91,8 +91,8 @@ def get_niftyindices_returns(
         raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
     
     
-#Example Usgae - http://127.0.0.1:8000/niftyindices/indice-pcr?symbol=NIFTY
-@router.get("/niftyindices/indice-pcr",tags=["Nifty Indices"])
+#Example Usgae - http://127.0.0.1:8000/nseindices/indice-pcr?symbol=NIFTY
+@router.get("/nseindices/indice-pcr",tags=["NSE Indices"])
 def get_pcr(
     symbol: str = Query(..., title="Symbol", description="Indice symbol")
 ):
@@ -131,8 +131,8 @@ def india_vix_history(start_date, end_date):
     return pd.DataFrame(payload)
 
 
-# Example usage - http://localhost:8000/niftyindices/india-vix?start_date=28-01-2024&end_date=04-02-2024
-@router.get("/niftyindices/india-vix",tags=["Nifty Indices"])
+# Example usage - http://localhost:8000/nseindices/india-vix?start_date=28-01-2024&end_date=04-02-2024
+@router.get("/nseindices/india-vix",tags=["NSE Indices"])
 def get_india_vix_history(
     start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
     end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  

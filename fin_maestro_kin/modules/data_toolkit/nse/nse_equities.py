@@ -286,3 +286,19 @@ def pcr_stocks_scraper(symbol):
 def get_pcr(symbol: str = Query(..., title="Symbol", description="Stock symbol")):
     pcr_value = pcr_stocks_scraper(symbol)
     return {"symbol": symbol, "pcr_value": pcr_value}
+
+
+def nse_equity_tickers():
+    try:
+        symbols = pd.read_csv('https://archives.nseindia.com/content/equities/EQUITY_L.csv')
+        tickers = symbols['SYMBOL'].tolist()
+        return tickers
+    except Exception as e:
+        return f"Error fetching equity tickers: {e}"
+
+
+#Example usage - http://localhost:8000/equities/equity-tickers
+@router.get("/equities/equity-tickers", tags=["Equities"])
+def get_nse_equity_tickers():
+    tickers = nse_equity_tickers()
+    return {"equity_tickers": tickers}
