@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fin-maestro-kin"
-version = "0.1.4"
-description = "FastAPI for Fin-Maestro: Empowering traders & investors with advanced research tools and real-time sentiment analysis."
+version = "0.1.5"
+description = "Where Data Meets FastAPI Brilliance with Fin-Maestro-Kin – Your All-in-One Finance API."
 authors = ["DEV_FINWIZ <devjuneja43@gmail.com>"]
 license = "MIT"
 readme = "README.md"
