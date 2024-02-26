@@ -300,5 +300,4 @@ def nse_equity_tickers():
 #Example usage - http://localhost:8000/equities/equity-tickers
 @router.get("/equities/equity-tickers", tags=["Equities"])
 def get_nse_equity_tickers():
-    tickers = nse_equity_tickers()
-    return {"equity_tickers": tickers}
+    return {"equity_tickers": nse_equity_tickers()}

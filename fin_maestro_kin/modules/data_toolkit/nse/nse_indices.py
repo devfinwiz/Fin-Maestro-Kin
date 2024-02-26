@@ -143,3 +143,19 @@ def get_india_vix_history(
         return JSONResponse(content={"data": rounded_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching India Vix historical data: {e}")
+    
+    
+def fetch_index_symbols():
+    url = 'https://nseindia.com/api/allIndices'
+    try:
+        response = fetch_data_from_nse(url) 
+        data = response.get('data', [])
+        index_symbols = [entry['indexSymbol'] for entry in data]
+        return index_symbols
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching index symbols: {e}")
+
+
+@router.get("/nseindices/index-symbols", tags=["NSE Indices"])
+def get_index_symbols():
+    return {"index_symbols": fetch_index_symbols()}
