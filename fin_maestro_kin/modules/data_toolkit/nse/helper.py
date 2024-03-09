@@ -51,3 +51,169 @@ def transform_financial_year(financial_year):
     to_date_str = end_date.strftime("%b-%Y")
 
     return from_date_str, to_date_str
+
+
+def process_vix_data(historical_data):
+    rounded_data = convert_dataframe_to_dict(historical_data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "date": entry["EOD_TIMESTAMP"],
+            "index_name": entry["EOD_INDEX_NAME"],
+            "open_value": entry["EOD_OPEN_INDEX_VAL"],
+            "close_value": entry["EOD_CLOSE_INDEX_VAL"],
+            "high_value": entry["EOD_HIGH_INDEX_VAL"],
+            "low_value": entry["EOD_LOW_INDEX_VAL"],
+            "previous_close": entry["EOD_PREV_CLOSE"],
+            "points_change": entry["VIX_PTS_CHG"],
+            "percentage_change": entry["VIX_PERC_CHG"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_security_wise_archive_data(historical_data):
+    rounded_data = convert_dataframe_to_dict(historical_data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "date": entry["CH_TIMESTAMP"],
+            "symbol": entry["CH_SYMBOL"],
+            "series": entry["CH_SERIES"],
+            "high_price": entry["CH_TRADE_HIGH_PRICE"],
+            "low_price": entry["CH_TRADE_LOW_PRICE"],
+            "opening_price": entry["CH_OPENING_PRICE"],
+            "closing_price": entry["CH_CLOSING_PRICE"],
+            "last_traded_price": entry["CH_LAST_TRADED_PRICE"],
+            "previous_close": entry["CH_PREVIOUS_CLS_PRICE"],
+            "total_traded_qty": entry["CH_TOT_TRADED_QTY"],
+            "total_traded_val": entry["CH_TOT_TRADED_VAL"],
+            "52_week_high_price": entry["CH_52WEEK_HIGH_PRICE"],
+            "52_week_low_price": entry["CH_52WEEK_LOW_PRICE"],
+            "total_trades": entry["CH_TOTAL_TRADES"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+    
+def process_bulk_block_deal_archive_data(historical_data):
+    rounded_data = convert_dataframe_to_dict(historical_data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "date": entry["BD_DT_DATE"],
+            "symbol": entry["BD_SYMBOL"],
+            "script_name": entry["BD_SCRIP_NAME"],
+            "client_name": entry["BD_CLIENT_NAME"],
+            "transaction_type": entry["BD_BUY_SELL"],
+            "quantity": entry["BD_QTY_TRD"],
+            "Trade Price/Weighted Average Trade Price": entry["BD_TP_WATP"],
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_short_selling_archives_data(historical_data):
+    rounded_data = convert_dataframe_to_dict(historical_data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "date": entry["SS_DATE"],
+            "name": entry["SS_NAME"],
+            "symbol": entry["SS_SYMBOL"],
+            "quantity": entry["SS_QTY"],
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_corporate_actions_data(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "symbol": entry["symbol"],
+            "series": entry["series"],
+            "industry": entry["ind"],
+            "face_value": entry["faceVal"],
+            "subject": entry["subject"],
+            "ex_date": entry["exDate"],
+            "record_date": entry["recDate"],
+            "bc_start_date": entry["bcStartDate"],
+            "bc_end_date": entry["bcEndDate"],
+            "company": entry["comp"],
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_most_active_securities_data(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "security": entry["ASM_SECURITY"],
+            "average_daily_turnover": entry["ASM_AVG_DLY_TURNOVER"],
+            "number_of_trades": entry["ASM_NO_OF_TRADES"],
+            "share_in_total_turnover": entry["ASM_SHARE_IN_TOTAL_TURNOVER"],
+            "traded_quantity": entry["ASM_TRADED_QUANTITY"],
+            "turnover": entry["ASM_TURNOVER"],
+            "timestamp": entry["TIMESTAMP"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_monthly_advances_declines_data(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "record_type": entry["ADM_REC_TY"],
+            "month": entry["ADM_MONTH_YEAR_STRING"],
+            "advances": entry["ADM_ADVANCES"],
+            "declines": entry["ADM_DECLINES"],
+            "advances_declines_ratio": entry["ADM_ADV_DCLN_RATIO"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_capital_market_monthly_settlement_stats(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "start_date": entry["ST_DATE"],
+            "delivered_quantity_lacs": entry["ST_DELIVERED_QTY_LACS"],
+            "delivered_value_crores": entry["ST_DELIVERED_VALUE_CRORES"],
+            "funds_payin_crores": entry["ST_FUNDS_PAYIN_CRORES"],
+            "number_of_trades_lacs": entry["ST_NO_OF_TRADES_LACS"],
+            "percentage_delivered_to_traded_quantity": entry["ST_PERC_DLVRD_TO_TRADED_QTY"],
+            "percentage_delivered_value_to_turnover": entry["ST_PERC_DLVRD_VAL_TO_TURNOVER"],
+            "percentage_short_delivery_to_delivery": entry["ST_PERC_SHORT_DLVRY_TO_DLVRY"],
+            "percentage_short_delivery_value_delivery": entry["ST_PERC_SHORT_DLVRY_VAL_DLVRY"],
+            "settlement_number": entry["ST_SETTLEMENT_NO"],
+            "short_delivery_auc_quantity_lacs": entry["ST_SHORT_DLVRY_AUC_QTY_LACS"],
+            "short_delivery_value": entry["ST_SHORT_DLVRY_VALUE"],
+            "traded_quantity_lacs": entry["ST_TRADED_QTY_LACS"],
+            "turnover_crores": entry["ST_TURNOVER_CRORES"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_fno_monthly_settlement_stats(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "start_date": entry["st_date"],
+            "mtm": entry["st_Mtm"],
+            "final": entry["st_Final"],
+            "premium": entry["st_Premium"],
+            "exercise": entry["st_Excercise"],
+            "total": entry["st_Total"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data

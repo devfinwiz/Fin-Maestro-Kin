@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from modules.data_toolkit.nse.helper import fetch_data_from_nse, convert_dataframe_to_dict
+from modules.data_toolkit.nse.helper import *
 from fastapi.responses import JSONResponse
 import requests
 import json
@@ -139,8 +139,8 @@ def get_india_vix_history(
 ):
     try:
         historical_data = india_vix_history(start_date, end_date)
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_vix_data(historical_data)
+        return JSONResponse(content={"vix_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching India Vix historical data: {e}")
     

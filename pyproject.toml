@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fin-maestro-kin"
-version = "0.1.6"
+version = "0.1.7"
 description = "Where Data Meets FastAPI Brilliance with Fin-Maestro-Kin – Your All-in-One Finance API."
 authors = ["DEV_FINWIZ <devjuneja43@gmail.com>"]
 license = "MIT"

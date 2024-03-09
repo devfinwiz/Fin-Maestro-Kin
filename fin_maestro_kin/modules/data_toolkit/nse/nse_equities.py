@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from modules.data_toolkit.nse.helper import fetch_data_from_nse, convert_dataframe_to_dict, transform_financial_year
+from modules.data_toolkit.nse.helper import *
 from fastapi.responses import JSONResponse
 import requests
 import pandas as pd
@@ -32,8 +32,8 @@ def get_security_wise_archive(
 ):
     try:
         historical_data = security_wise_archive(symbol, start_date, end_date, series)
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_security_wise_archive_data(historical_data)
+        return JSONResponse(content={"stock_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching security-wise archive data: {e}")
     
@@ -59,8 +59,8 @@ def get_bulk_deals_archives(
 ):
     try:
         historical_data = bulk_deals_archives(start_date, end_date)
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_bulk_block_deal_archive_data(historical_data)
+        return JSONResponse(content={"bulk_deal_archive_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching bulk-deals archive data: {e}")
     
@@ -86,10 +86,10 @@ def get_block_deals_archives(
 ):
     try:
         historical_data = block_deals_archives(start_date, end_date)
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_bulk_block_deal_archive_data(historical_data)
+        return JSONResponse(content={"block_deal_archive_data": processed_data})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching blovk deals archive data: {e}")
+        raise HTTPException(status_code=500, detail=f"Error fetching block deals archive data: {e}")
     
 
 def short_selling_archives(start_date, end_date):
@@ -105,7 +105,7 @@ def short_selling_archives(start_date, end_date):
     return pd.DataFrame(payload)
 
 
-#Example usage - http://localhost:8000/equities/short-selling?start_date=28-01-2024&end_date=04-02-2024
+#Example usage - http://localhost:8000/equities/short-selling-archives?start_date=28-01-2024&end_date=04-02-2024
 @router.get("/equities/short-selling-archives",tags=["Equities"])
 def get_short_selling_archives(
     start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
@@ -113,8 +113,8 @@ def get_short_selling_archives(
 ):
     try:
         historical_data = short_selling_archives(start_date, end_date)
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_short_selling_archives_data(historical_data)
+        return JSONResponse(content={"short_selling_archive_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching short-selling archive data: {e}")
     
@@ -139,13 +139,13 @@ def corporate_actions(start_date, end_date):
 # Example usage - http://localhost:8000/equities/corporate-actions?start_date=28-01-2024&end_date=04-02-2024
 @router.get("/equities/corporate-actions",tags=["Equities"])
 def get_corporate_actions(
-    start_date: str = Query(..., title="From Date", description="Start date for historical data in dd-mm-yyyy format"),
-    end_date: str = Query(..., title="To Date", description="End date for historical data in dd-mm-yyyy format"),  
+    start_date: str = Query(..., title="From Date", description="Start date for data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for data in dd-mm-yyyy format"),  
 ):
     try:
-        historical_data = corporate_actions(start_date, end_date)
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        data = corporate_actions(start_date, end_date)
+        processed_data = process_corporate_actions_data(data)
+        return JSONResponse(content={"corporate_actions_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching corporate actions data: {e}")
     
@@ -166,8 +166,8 @@ def nse_monthly_most_active_securities():
 def get_nse_monthly_most_active_securities():
     try:
         historical_data = nse_monthly_most_active_securities()
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_most_active_securities_data(historical_data)
+        return JSONResponse(content={"most_active_securities_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching monthly most active securities data: {e}")
     
@@ -195,10 +195,10 @@ def get_nse_monthly_advances_and_declines(
     
     try:
         historical_data = nse_monthly_advances_and_declines(year)
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_monthly_advances_declines_data(historical_data)
+        return JSONResponse(content={"monthly_advances_and_declines_data": processed_data})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching advances and decline data: {e}")
+        raise HTTPException(status_code=500, detail=f"Error fetching advances and declines data: {e}")
     
     
 def nse_capital_market_monthly_settlement_stats(financial_year):
@@ -223,8 +223,8 @@ def get_nse_capital_market_monthly_settlement_stats(
     
     try:
         historical_data = nse_capital_market_monthly_settlement_stats(financial_year)
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_capital_market_monthly_settlement_stats(historical_data)
+        return JSONResponse(content={"capital_market_monthly_settlement_stats_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching monthly settlement statistics for capital market: {e}")
 
@@ -256,8 +256,8 @@ def get_nse_fno_monthly_settlement_stats(
         if not isinstance(historical_data, pd.DataFrame):
             raise HTTPException(status_code=404, detail="No data found.")
         
-        rounded_data = convert_dataframe_to_dict(historical_data)
-        return JSONResponse(content={"data": rounded_data})
+        processed_data = process_fno_monthly_settlement_stats(historical_data)
+        return JSONResponse(content={"fno_monthly_settlement_stats_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching monthly settlement statistics for future & options: {e}")
     
