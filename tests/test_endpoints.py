@@ -1,7 +1,7 @@
 # tests/test_endpoints.py
 import pytest
 import requests
-from constants.endpoints import ENDPOINTS
+from constants import ENDPOINTS
 
 @pytest.fixture
 def api_url():
