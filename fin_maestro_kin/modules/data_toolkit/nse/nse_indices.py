@@ -4,31 +4,22 @@ from fastapi.responses import JSONResponse
 import requests
 import json
 import pandas as pd
+import datetime
 
 router = APIRouter(tags=["NSE Indices"])
 
-niftyindices_headers = {
-    'Connection': 'keep-alive',
-    'sec-ch-ua': '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
-    'Accept': 'application/json, text/javascript, */*; q=0.01',
-    'DNT': '1',
-    'X-Requested-With': 'XMLHttpRequest',
-    'sec-ch-ua-mobile': '?0',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
-    'Content-Type': 'application/json; charset=UTF-8',
-    'Origin': 'https://niftyindices.com',
-    'Sec-Fetch-Site': 'same-origin',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Dest': 'empty',
-    'Referer': 'https://niftyindices.com/reports/historical-data',
-    'Accept-Language': 'en-US,en;q=0.9,hi;q=0.8',
-}
-
 
 def index_history(symbol, start_date, end_date):
-    data = "{'name':'" + symbol + "','startDate':'" + start_date + "','endDate':'" + end_date + "'}"
-    payload = requests.post('https://niftyindices.com/Backpage.aspx/getHistoricaldatatabletoString', headers=niftyindices_headers,  data=data).json()
+    start_date = datetime.datetime.strptime(start_date, "%d-%b-%Y").strftime("%d %b %Y")
+    end_date = datetime.datetime.strptime(end_date, "%d-%b-%Y").strftime("%d %b %Y")
+
+    data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}'}}"}
+    payload = requests.post('https://www.niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', json=data, headers=niftyindices_headers).json()
     payload = json.loads(payload["d"])
+    
+    if not payload:
+        raise HTTPException(status_code=404, detail="No historical data found.")
+    
     payload = pd.DataFrame.from_records(payload)
     return payload
 
@@ -47,10 +38,17 @@ def get_nse_indices_history(
         raise HTTPException(status_code=500, detail=f"Error fetching historical data: {e}")
     
 
-def index_pe_pb_div(symbol,start_date,end_date):
-    data = "{'name':'"+symbol+"','startDate':'"+start_date+"','endDate':'"+end_date+"'}"
-    payload = requests.post('https://niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', headers=niftyindices_headers,  data=data).json()
+def index_pe_pb_div(symbol, start_date, end_date):
+    start_date = datetime.datetime.strptime(start_date, "%d-%b-%Y").strftime("%d %b %Y")
+    end_date = datetime.datetime.strptime(end_date, "%d-%b-%Y").strftime("%d %b %Y")
+    
+    data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}'}}"}
+    payload = requests.post('https://niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', headers=niftyindices_headers,  json=data).json()
     payload = json.loads(payload["d"])
+    
+    if not payload:
+        raise HTTPException(status_code=404, detail="No historical data found.")
+    
     payload=pd.DataFrame.from_records(payload)
     return payload
 
@@ -70,9 +68,16 @@ def get_nse_indices_ratios(
     
 
 def index_total_returns(symbol,start_date,end_date):
-    data = "{'name':'"+symbol+"','startDate':'"+start_date+"','endDate':'"+end_date+"'}"
-    payload = requests.post('https://niftyindices.com/Backpage.aspx/getTotalReturnIndexString', headers=niftyindices_headers,  data=data).json()
+    start_date = datetime.datetime.strptime(start_date, "%d-%b-%Y").strftime("%d %b %Y")
+    end_date = datetime.datetime.strptime(end_date, "%d-%b-%Y").strftime("%d %b %Y")
+    
+    data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}'}}"}
+    payload = requests.post('https://niftyindices.com/Backpage.aspx/getTotalReturnIndexString', headers=niftyindices_headers,  json=data).json()
     payload = json.loads(payload["d"])
+    
+    if not payload:
+        raise HTTPException(status_code=404, detail="No historical data found.")
+    
     payload=pd.DataFrame.from_records(payload)
     return payload
 
@@ -156,6 +161,7 @@ def fetch_index_symbols():
         raise HTTPException(status_code=500, detail=f"Error fetching index symbols: {e}")
 
 
+# Example usage - http://localhost:8000/nseindices/index-symbols
 @router.get("/nseindices/index-symbols", tags=["NSE Indices"])
 def get_index_symbols():
     return {"index_symbols": fetch_index_symbols()}
