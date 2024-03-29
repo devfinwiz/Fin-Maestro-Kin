@@ -38,9 +38,13 @@
 ## **Fin-Maestro-Kin** empowers you to:
 
 - 📊**Effortlessly Fetch Historical Data:** Seamlessly fetch historical financial data for in-depth analysis and market trend identification.
+
 - 📈**Perform Market Trend Analysis:** Uncover valuable insights and identify market trends with ease, guiding your investment decisions.
+  
 - 📉**Evaluate Market Sentiment:** Gauge market sentiment to make informed investment decisions based on current market psychology.
+  
 - ⚡**Experience Lightning-Fast Performance:** Benefit from the performance and scalability of FastAPI for a seamless user experience.
+  
 - 🔍**Craft Unparalleled Market Insights:** Build your own financial applications powered by Fin-Maestro-Kin, unlocking a deeper understanding of the market.
 
 
@@ -61,7 +65,8 @@ docker run -d -p 8000:8000 devfinwiz24/fin-maestro-kin:latest
 This command pulls the latest version of the Docker image from Docker Hub and runs it in a detached mode (`-d`) while mapping port 8000 of the host machine to port 8000 of the container (`-p 8000:8000`).
 
 ## Using Docker Desktop (Optional)
-### Prerequisite: [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
+> [!IMPORTANT]
+> ### Prerequisite: [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 1. **Pull the Docker Image:**
    - Open Docker Desktop and navigate to the "Images" section.
