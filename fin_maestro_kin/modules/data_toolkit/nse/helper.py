@@ -234,3 +234,67 @@ def process_fno_monthly_settlement_stats(data):
         }
         processed_data.append(processed_entry)
     return processed_data
+
+
+def process_board_meetings_data(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "start_date": entry["bm_date"],
+            "symbol": entry["bm_symbol"],
+            "purpose": entry["bm_purpose"],
+            "description": entry["bm_desc"],
+            "company_name": entry["sm_name"],
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_insider_trading_data(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "symbol": entry["symbol"],
+            "company": entry["company"],
+            "acquirer": entry["acqName"],
+            "broadcast_date": entry["date"],
+            "security_type": entry["secType"],
+            "transaction_type": entry["tdpTransactionType"],
+            "acquirer_category": entry["personCategory"],
+            "no_of_securities": entry["secAcq"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_shareholding_patterns_data(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "symbol": entry["symbol"],
+            "company": entry["name"],
+            "as_on_date": entry["date"],
+            "promoter_and_promoter_group": entry["pr_and_prgrp"],
+            "public": entry["public_val"],
+            "employee_trusts": entry["employeeTrusts"],
+            "submission_date": entry["submissionDate"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
+def process_annual_reports_data(data):
+    rounded_data = convert_dataframe_to_dict(data)
+    processed_data = []
+    for entry in rounded_data:
+        processed_entry = {
+            "company": entry["companyName"],
+            "from_year": entry["fromYr"],
+            "to_year": entry["toYr"],
+            "attachment": entry["fileName"],
+        }
+        processed_data.append(processed_entry)
+    return processed_data

@@ -301,3 +301,123 @@ def nse_equity_tickers():
 @router.get("/equities/equity-tickers", tags=["Equities"])
 def get_nse_equity_tickers():
     return {"equity_tickers": nse_equity_tickers()}
+
+
+def board_meetings(start_date, end_date):
+    base_url = "https://www.nseindia.com/api/corporate-board-meetings"
+    
+    customized_request_url = f"{base_url}?index=equities&from={start_date}&to={end_date}"
+    response = fetch_data_from_nse(customized_request_url)
+    
+    if not response:
+        raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
+    
+    if isinstance(response, list):
+        payload = response
+    else:
+        payload = response.get('data', [])
+    
+    return pd.DataFrame(payload)
+    
+
+# Example usage - http://localhost:8000/equities/board-meetings?start_date=28-01-2024&end_date=04-02-2024
+@router.get("/equities/board-meetings",tags=["Equities"])
+def get_board_meetings(
+    start_date: str = Query(..., title="From Date", description="Start date for data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for data in dd-mm-yyyy format"),  
+):
+    try:
+        data = board_meetings(start_date, end_date)
+        processed_data = process_board_meetings_data(data)
+        return JSONResponse(content={"board_meetings_data": processed_data})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching board meetings data: {e}")
+    
+    
+def insider_trading(start_date, end_date):
+    base_url = "https://www.nseindia.com/api/corporates-pit"
+    
+    customized_request_url = f"{base_url}?index=equities&from={start_date}&to={end_date}"
+    response = fetch_data_from_nse(customized_request_url)
+    
+    if not response:
+        raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
+    
+    if isinstance(response, list):
+        payload = response
+    else:
+        payload = response.get('data', [])
+    
+    return pd.DataFrame(payload)
+    
+
+# Example usage - http://localhost:8000/equities/insider-trading?start_date=28-01-2024&end_date=04-02-2024
+@router.get("/equities/insider-trading",tags=["Equities"])
+def get_insider_trading(
+    start_date: str = Query(..., title="From Date", description="Start date for data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="To Date", description="End date for data in dd-mm-yyyy format"),  
+):
+    try:
+        data = insider_trading(start_date, end_date)
+        processed_data = process_insider_trading_data(data)
+        return JSONResponse(content={"insider_trading_data": processed_data})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching insider_trading data: {e}")
+    
+
+def shareholding_patterns(symbol):
+    base_url = "https://www.nseindia.com/api/corporate-share-holdings-master"
+    
+    customized_request_url = f"{base_url}?index=equities&symbol={symbol}"
+    response = fetch_data_from_nse(customized_request_url)
+    
+    if not response:
+        raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
+    
+    if isinstance(response, list):
+        payload = response
+    else:
+        payload = response.get('data', [])
+    return pd.DataFrame(payload)
+    
+
+# Example usage - http://localhost:8000/equities/shareholding-patterns?symbol=BAJAJCON
+@router.get("/equities/shareholding-patterns",tags=["Equities"])
+def get_shareholding_patterns(
+    symbol: str = Query(..., title="Symbol", description="Stock Symbol")
+):
+    try:
+        data = shareholding_patterns(symbol)
+        processed_data = process_shareholding_patterns_data(data)
+        return JSONResponse(content={"shareholding_patterns_data": processed_data})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching shareholding patterns data: {e}")
+    
+    
+def annual_reports(symbol):
+    base_url = "https://www.nseindia.com/api/annual-reports"
+    
+    customized_request_url = f"{base_url}?index=equities&symbol={symbol}"
+    response = fetch_data_from_nse(customized_request_url)
+    
+    if not response:
+        raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
+    
+    if isinstance(response, list):
+        payload = response
+    else:
+        payload = response.get('data', [])
+    return pd.DataFrame(payload)
+    
+
+# Example usage - http://localhost:8000/equities/annual-reports?symbol=BAJAJCON
+@router.get("/equities/annual-reports",tags=["Equities"])
+def get_annual_reports(
+    symbol: str = Query(..., title="Symbol", description="Stock Symbol")
+):
+    try:
+        data = annual_reports(symbol)
+        processed_data = process_annual_reports_data(data)
+        return JSONResponse(content={"annual_reports_data": processed_data})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching annual reports data: {e}")

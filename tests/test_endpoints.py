@@ -11,5 +11,3 @@ def api_url():
 def test_endpoints(api_url, endpoint):
     response = requests.get(f"{api_url}{endpoint}")
     assert response.status_code == 200
-
-
