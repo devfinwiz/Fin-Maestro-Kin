@@ -17,5 +17,9 @@ ENDPOINTS = [
     '/nseindices/india-vix?start_date=28-01-2024&end_date=04-02-2024',
     '/sentiment/pcr-indice-analysis',
     '/sentiment/pcr-stocks-analysis?symbol=INFY',
-    '/generate_plot?ticker=BSE.NS'
+    '/generate_plot?ticker=BSE.NS',
+    '/equities/annual-reports?symbol=BAJAJCON',
+    '/equities/shareholding-patterns?symbol=BAJAJCON',
+    '/equities/insider-trading?start_date=28-01-2024&end_date=04-02-2024',
+    '/equities/board-meetings?start_date=28-01-2024&end_date=04-02-2024'
 ]
