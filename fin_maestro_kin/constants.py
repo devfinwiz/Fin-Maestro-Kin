@@ -21,5 +21,6 @@ ENDPOINTS = [
     '/equities/annual-reports?symbol=BAJAJCON',
     '/equities/shareholding-patterns?symbol=BAJAJCON',
     '/equities/insider-trading?start_date=28-01-2024&end_date=04-02-2024',
-    '/equities/board-meetings?start_date=28-01-2024&end_date=04-02-2024'
+    '/equities/board-meetings?start_date=28-01-2024&end_date=04-02-2024',
+    '/nseindices/history?symbol=NIFTY 50&start_date=10-01-2024&end_date=12-02-2024'
 ]

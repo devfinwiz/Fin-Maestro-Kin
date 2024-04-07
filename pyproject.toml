@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fin-maestro-kin"
-version = "0.2.1"
+version = "0.2.2"
 description = "Where Data Meets FastAPI Brilliance with Fin-Maestro-Kin – Your All-in-One Finance API."
 authors = ["DEV_FINWIZ <devjuneja43@gmail.com>"]
 license = "MIT"
@@ -16,8 +16,9 @@ yfinance = "^0.2.35"
 matplotlib = "^3.8.2"
 pandas = "^2.1.4"
 numpy = "^1.26.3"
-pytest = "^8.1.1"
 
+[tool.poetry.dev-dependencies]
+pytest = "^8.1.1"
 
 [build-system]
 requires = ["poetry-core"]

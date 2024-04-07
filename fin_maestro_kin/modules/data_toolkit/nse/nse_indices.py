@@ -7,33 +7,32 @@ import pandas as pd
 import datetime
 
 router = APIRouter(tags=["NSE Indices"])
-
+    
 
 def index_history(symbol, start_date, end_date):
-    start_date = datetime.datetime.strptime(start_date, "%d-%b-%Y").strftime("%d %b %Y")
-    end_date = datetime.datetime.strptime(end_date, "%d-%b-%Y").strftime("%d %b %Y")
-
-    data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}'}}"}
-    payload = requests.post('https://www.niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', json=data, headers=niftyindices_headers).json()
-    payload = json.loads(payload["d"])
+    base_url="https://www.nseindia.com/api/historical/indicesHistory"
+    customized_request_url = f"{base_url}?indexType={symbol}&from={start_date}&to={end_date}"
+    response=fetch_data_from_nse(customized_request_url)
+    
+    payload = response.get('data', [])
     
     if not payload:
-        raise HTTPException(status_code=404, detail="No historical data found.")
+        raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
     
-    payload = pd.DataFrame.from_records(payload)
-    return payload
+    return pd.DataFrame(payload)
 
 
-#Example usage - 127.0.0.1:8000/nseindices/history?symbol=NIFTY 50&start_date=10-Jan-2024&end_date=12-Jan-2024
+#Example usage - 127.0.0.1:8000/nseindices/history?symbol=NIFTY 50&start_date=10-01-2024&end_date=12-02-2024
 @router.get("/nseindices/history",tags=["NSE Indices"])
-def get_nse_indices_history(
-    symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
-    start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
-    end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
+def get_nse_index_history(
+    symbol: str = Query(..., title="Symbol", description="NSE indices symbol"),
+    start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mm-yyyy format"),
+    end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mm-yyyy format")
 ):
     try:
         history_data = index_history(symbol, start_date, end_date)
-        return history_data.to_dict(orient='records')
+        processed_data = process_index_data(history_data)
+        return JSONResponse(content={"index_historical_data": processed_data})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching historical data: {e}")
     

@@ -298,3 +298,33 @@ def process_annual_reports_data(data):
         }
         processed_data.append(processed_entry)
     return processed_data
+
+
+import json
+
+import json
+
+def process_index_data(data):
+    data_json = data.to_json(orient="records")
+
+    try:
+        data = json.loads(data_json)
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON data"}
+
+    processed_data = []
+    for entry in data:
+        processed_entry = {
+            "index_name": entry["indexCloseOnlineRecords"]["EOD_INDEX_NAME"],
+            "open_value": entry["indexCloseOnlineRecords"]["EOD_OPEN_INDEX_VAL"],
+            "high_value": entry["indexCloseOnlineRecords"]["EOD_HIGH_INDEX_VAL"],
+            "close_value": entry["indexCloseOnlineRecords"]["EOD_CLOSE_INDEX_VAL"],
+            "low_value": entry["indexCloseOnlineRecords"]["EOD_LOW_INDEX_VAL"],
+            "timestamp": entry["indexCloseOnlineRecords"]["EOD_TIMESTAMP"],
+            "traded_quantity": entry["indexTurnoverRecords"]["HIT_TRADED_QTY"],
+            "turnover": entry["indexTurnoverRecords"]["HIT_TURN_OVER"]
+        }
+        processed_data.append(processed_entry)
+    return processed_data
+
+
