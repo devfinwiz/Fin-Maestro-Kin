@@ -16,6 +16,7 @@ yfinance = "^0.2.35"
 matplotlib = "^3.8.2"
 pandas = "^2.1.4"
 numpy = "^1.26.3"
+beautifulsoup4 = "^4.12.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.1.1"
