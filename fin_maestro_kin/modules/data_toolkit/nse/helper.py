@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+import json
 import math
 from datetime import datetime
 
@@ -45,7 +46,6 @@ def fetch_data_from_nse(payload):
     return result
 
 
-# Convert DataFrame to dictionary with special handling for float values
 def convert_dataframe_to_dict(df):
     df_dict = df.to_dict(orient='records')
     for record in df_dict:
@@ -300,10 +300,6 @@ def process_annual_reports_data(data):
     return processed_data
 
 
-import json
-
-import json
-
 def process_index_data(data):
     data_json = data.to_json(orient="records")
 
@@ -326,5 +322,3 @@ def process_index_data(data):
         }
         processed_data.append(processed_entry)
     return processed_data
-
-
