@@ -87,4 +87,4 @@ This command pulls the latest version of the Docker image from Docker Hub and ru
    - You can monitor container status, view container logs, and interact with running containers using the Docker Desktop GUI.
 
 ## Usage
-After deploying the container, interact with Fin Maestro Kin by sending HTTP requests to the exposed endpoints. Refer to the API [documentation](http://localhost:8000/docs) for detailed information on available endpoints and request formats.
+After deploying the container, interact with Fin Maestro Kin by sending HTTP requests to the exposed endpoints. Refer to the API [documentation](https://fin-maestro-kin.apidog.io/) for detailed information on available endpoints and request formats.
