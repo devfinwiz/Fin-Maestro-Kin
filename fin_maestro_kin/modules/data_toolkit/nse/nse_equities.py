@@ -151,7 +151,7 @@ def get_corporate_actions(
     
 
 def nse_monthly_most_active_securities():
-    request_url = "https://www.nseindia.com/api/historical/most-active-securities-monthly"
+    request_url = "https://www.nseindia.com/api/live-analysis-most-active-securities?index=volume"
     response = fetch_data_from_nse(request_url)
     payload = response.get('data', [])
     

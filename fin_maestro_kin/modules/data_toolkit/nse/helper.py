@@ -169,13 +169,17 @@ def process_most_active_securities_data(data):
     processed_data = []
     for entry in rounded_data:
         processed_entry = {
-            "security": entry["ASM_SECURITY"],
-            "average_daily_turnover": entry["ASM_AVG_DLY_TURNOVER"],
-            "number_of_trades": entry["ASM_NO_OF_TRADES"],
-            "share_in_total_turnover": entry["ASM_SHARE_IN_TOTAL_TURNOVER"],
-            "traded_quantity": entry["ASM_TRADED_QUANTITY"],
-            "turnover": entry["ASM_TURNOVER"],
-            "timestamp": entry["TIMESTAMP"]
+            "symbol": entry["symbol"],
+            "last_price": entry["lastPrice"],
+            "percentage_change": entry["pChange"],
+            "total_traded_volume": entry["totalTradedVolume"],
+            "traded_quantity": entry["quantityTraded"],
+            "total_traded_value": entry["totalTradedValue"],
+            "previous_close": entry["previousClose"],
+            "ex_date": entry["exDate"],
+            "purpose": entry["purpose"],
+            "year_high": entry["yearHigh"],
+            "year_low": entry["yearLow"]
         }
         processed_data.append(processed_entry)
     return processed_data
