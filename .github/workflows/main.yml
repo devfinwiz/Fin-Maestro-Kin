@@ -1,0 +1,29 @@
+name: Automated API Tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install Apidog CLI
+      run: npm install -g apidog-cli
+
+    - name: Pull Docker image
+      run: docker pull devfinwiz24/fin-maestro-kin:latest
+
+    - name: Run FastAPI server container
+      run: |
+        docker run -d -p 8000:8000 devfinwiz24/fin-maestro-kin:latest
+        sleep 10
+
+    - name: Running Test Scenario
+      run: apidog run https://api.apidog.com/api/v1/projects/510040/api-test/ci-config/351847/detail?token=xv6eHjzKrHKGJua5udyuBk -r html,cli
