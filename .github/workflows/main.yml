@@ -18,7 +18,7 @@ jobs:
       run: npm install -g apidog-cli
 
     - name: Build Docker image
-      run: docker build -t devfinwiz24/fin-maestro-kin:latest
+      run: docker build -t devfinwiz24/fin-maestro-kin:latest .
 
     - name: Run FastAPI server container
       run: |
