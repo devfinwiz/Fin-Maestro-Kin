@@ -2,10 +2,6 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 import requests
 from bs4 import BeautifulSoup
-import re
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import json
 from modules.data_toolkit.screener.helper import *
 
 router = APIRouter(tags=["Screener Equities"])
@@ -22,32 +18,6 @@ def quarterly_results(company_code):
         rows = table.find('tbody').find_all('tr')
         data = [{header: td.text.strip() for header, td in zip(headers, row.find_all('td'))} for row in rows]
         return {'symbol': company_code, 'quarterly_reports': data}
-    elif response.status_code == 404:
-        raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
-    else:
-        raise HTTPException(status_code=500, detail=f"Failed to load the URL. Status code: {response.status_code}")
-
-
-def key_metrics(company_code):
-    url = f"https://www.screener.in/company/{company_code}/#top"
-    response = requests.get(url)
-
-    soup = BeautifulSoup(response.content, 'html.parser')
-    ratios = soup.find('div', {'class': 'company-ratios'})
-    ul_elements = ratios.find_all('ul')
-
-    if response.status_code == 200:
-        data = {}
-        for ul in ul_elements:
-            for li in ul.find_all('li'):
-                name = li.find('span', {'class': 'name'}).text.strip()
-                value = li.find('span', {'class': 'value'}).text.strip()
-                value = value.replace('\n', '').replace('\u20b9', '').replace('          ', '').replace('         ', '').replace('       ','').replace(' ','').replace(',','').replace('Cr.','Cr')
-                data[name] = value
-        current_price = float(data['Current Price'])
-        book_value = float(data['Book Value'])
-        data['Price to book'] = str(round(current_price / book_value, 2))
-        return {'symbol': company_code, 'key_metrics': data}
     elif response.status_code == 404:
         raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
     else:
