@@ -218,8 +218,7 @@ def key_metrics(company_code):
         for ul in ul_elements:
             for li in ul.find_all('li'):
                 name = li.find('span', {'class': 'name'}).text.strip()
-                value = li.find('span', {'class': 'value'}).text.strip()
-                value = value.replace('\n', '').replace('\u20b9', '').replace('          ', '').replace('         ', '').replace('       ','').replace(' ','').replace(',','').replace('Cr.','Cr')
+                value = process_key_metrics_data(li.find('span', {'class': 'value'}).text.strip())
                 data[name] = value
         current_price = float(data['Current Price'])
         book_value = float(data['Book Value'])

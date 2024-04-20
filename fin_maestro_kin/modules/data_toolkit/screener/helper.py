@@ -70,3 +70,7 @@ def process_ratios_data(data):
             formatted_label = label.replace('+', '').strip()
             formatted_reports[formatted_label] = {key: value for key, value in report.items() if key != ""}
     return {'symbol': stock_name, 'ratios': formatted_reports}
+
+
+def process_key_metrics_data(value):
+    return value.replace('\n', '').replace('\u20b9', '').replace('          ', '').replace('         ', '').replace('       ','').replace(' ','').replace(',','').replace('Cr.','Cr')
