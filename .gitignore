@@ -1,5 +1,6 @@
 # Ignore compiled Python files
 __pycache__/
+dist/
 *.pyc
 *.pyo
 *.pyd
