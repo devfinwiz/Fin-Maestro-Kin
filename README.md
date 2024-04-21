@@ -8,23 +8,23 @@
 
 
 <p align="center">
-  <a href="https://www.codefactor.io/repository/github/devfinwiz/fin-maestro-kin">
-    <img src="https://img.shields.io/badge/CodeFactor-A-blue&?style=for-the-badge&color=blue">
+  <a href="https://github.com/devfinwiz/fin-maestro-kin/releases/latest">
+    <img src="https://img.shields.io/github/v/release/devfinwiz/fin-maestro-kin?style=for-the-badge">
   </a>
   <a href="">
-    <img src="https://img.shields.io/badge/Python-3.9.1-blue&?style=for-the-badge&color=blue">
+    <img src="https://img.shields.io/badge/Python-3.9.1-blue&?style=for-the-badge&color=brown">
   </a>
   <a href="https://github.com/devfinwiz/Fin-Maestro-Kin/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/devfinwiz/Fin-Maestro-Kin?color=purple&style=for-the-badge">
   </a>
-  <a href="https://github.com/devfinwiz/Fin-Maestro-Kin/commits/master">
-    <img src="https://img.shields.io/github/last-commit/devfinwiz/Fin-Maestro-Kin?color=yellow&style=for-the-badge">
-  </a>
   <a href="https://github.com/devfinwiz/Fin-Maestro-Kin/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/devfinwiz/Fin-Maestro-Kin?color=indigo&style=for-the-badge">
   </a>
-  <a href="https://github.com/devfinwiz/Fin-Maestro-Kin/issues">
-    <img src="https://img.shields.io/github/issues-raw/devfinwiz/Fin-Maestro-Kin?color=indigo&style=for-the-badge">
+  <a href="https://www.codefactor.io/repository/github/devfinwiz/fin-maestro-kin">
+    <img src="https://www.codefactor.io/repository/github/devfinwiz/fin-maestro-kin/badge?style=for-the-badge&">
+  </a>
+  <a href="https://hub.docker.com/repository/docker/devfinwiz24/fin-maestro-kin/tags">
+    <img src="https://img.shields.io/docker/pulls/devfinwiz24/fin-maestro-kin?style=for-the-badge&logo=docker">
   </a>
 </p><br>
 
