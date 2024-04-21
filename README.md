@@ -1,14 +1,8 @@
 <p align="center">
-<img width="729" height="394" alt="image" src="https://github.com/devfinwiz/Fin-Maestro-Kin/assets/78873223/739a823a-b963-4509-84df-031dd9a62828">
+  <a href="hhttps://fin-maestro-kin.apidog.io/"><img src="https://github.com/devfinwiz/Fin-Maestro-Kin/assets/78873223/eb0f030e-5c6c-4457-9713-97d0487ae59c" alt="Fin Maestro Kin"></a>
 </p>
-
-<div align="center">
-
-## <p align="center"> 
-## <em>Seamless Finance: Docker-Deployed APIs for Smart Investments</em>
-## </p>
-
-</div>
+<p align="center" style="font-size: 20px;">
+    <em>Seamless Finance: Docker-Deployed APIs for Smart Investments.</em>
 
 <h1 align="center">Fin-Maestro-Kin </h1>
 
