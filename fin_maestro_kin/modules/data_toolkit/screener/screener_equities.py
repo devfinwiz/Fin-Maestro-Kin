@@ -23,7 +23,7 @@ class Helper:
         return value.replace('\n', '').replace('\u20b9', '').replace('          ', '').replace('         ', '').replace('       ','').replace(' ','').replace(',','').replace('Cr.','Cr')
     
     @staticmethod
-    def handle_key_metrics_response(self, response, company_code):
+    def handle_key_metrics_response(response, company_code):
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
             ratios = soup.find('div', {'class': 'company-ratios'})
@@ -33,7 +33,7 @@ class Helper:
             for ul in ul_elements:
                 for li in ul.find_all('li'):
                     name = li.find('span', {'class': 'name'}).text.strip()
-                    value = self.process_key_metrics_data(li.find('span', {'class': 'value'}).text.strip())
+                    value = Helper.process_key_metrics_data(li.find('span', {'class': 'value'}).text.strip())
                     data[name] = value
 
             current_price = float(data['Current Price'])
