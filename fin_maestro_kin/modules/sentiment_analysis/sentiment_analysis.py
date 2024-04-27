@@ -1,62 +1,97 @@
+import requests
+import json
 from fastapi import APIRouter, Query
-from .pcr_data import pcr_indice_scraper, pcr_stocks_scraper
-
-router = APIRouter(tags=["Sentiment"])
-
-#Example usage - http://127.0.0.1:8000/sentiment/pcr-indice-analysis
-@router.get("/sentiment/pcr-indice-analysis",tags=["Sentiment"])
-def analyze_indices():
-    try:
-        pcr_anal_result = pcr_indice_analysis()
-        return pcr_anal_result
-    except Exception as e:
-        return {"error": f"An error occurred during PCR analysis: {e}"}
 
 
-#Example usage - http://127.0.0.1:8000/sentiment/pcr-stocks-analysis?symbol=INFY
-@router.get("/sentiment/pcr-stocks-analysis",tags=["Sentiment"])
-def analyze_stock(symbol: str = Query(..., title="Symbol", description="Stock symbol")):
-    try:
-        pcr_anal_result = pcr_stocks_analysis(symbol)
-        return pcr_anal_result
-    except Exception as e:
-        return {"error": f"An error occurred during PCR analysis for {symbol}: {e}"}
+class PCR():
+    headers = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'en-US,en;q=0.9'
+    }
+
+    @staticmethod
+    def pcr_indice_scraper(symbol):
+        url = 'https://www.nseindia.com/api/option-chain-indices?symbol=' + symbol
+        request = requests.get("https://www.nseindia.com", timeout=10, headers=PCR.headers)
+        cookies = dict(request.cookies)
+        response = requests.get(url, headers=PCR.headers, cookies=cookies).content
+        data = json.loads(response.decode('utf-8'))
+        totCE = data['filtered']['CE']['totOI']
+        totPE = data['filtered']['PE']['totOI']
+        pcr = totPE / totCE
+        return round(pcr, 3)
+
+    @staticmethod
+    def pcr_stocks_scraper(symbol):
+        url = 'https://www.nseindia.com/api/option-chain-equities?symbol=' + symbol
+        request = requests.get("https://www.nseindia.com", timeout=10, headers=PCR.headers)
+        cookies = dict(request.cookies)
+        response = requests.get(url, headers=PCR.headers, cookies=cookies).content
+        data = json.loads(response.decode('utf-8'))
+        totCE = data['filtered']['CE']['totOI']
+        totPE = data['filtered']['PE']['totOI']
+        pcr = totPE / totCE
+        return round(pcr, 3)
 
 
-def pcr_indice_analysis():
-    pcr_anal_result = {}
-    indices = ["NIFTY", "BANKNIFTY"]
+class SentimentAnalyzer(PCR):
+    def __init__(self):
+        self.router = APIRouter(tags=["Sentiment"])
 
-    for symbol in indices:
+    def register_routes(self, app):
+        self.router.add_api_route("/sentiment/pcr-indice-analysis", self.analyze_indices, methods=["GET"])
+        self.router.add_api_route("/sentiment/pcr-stocks-analysis", self.analyze_stock, methods=["GET"])
+        app.include_router(self.router)
+
+    def analyze_indices(self):
         try:
-            pcr_value = pcr_indice_scraper(symbol)
+            pcr_anal_result = self.pcr_indice_analysis()
+            return pcr_anal_result
+        except Exception as e:
+            return {"error": f"An error occurred during PCR analysis: {e}"}
+
+    def analyze_stock(self, symbol: str = Query(..., title="Symbol", description="Stock symbol")):
+        try:
+            pcr_anal_result = self.pcr_stocks_analysis(symbol)
+            return pcr_anal_result
+        except Exception as e:
+            return {"error": f"An error occurred during PCR analysis for {symbol}: {e}"}
+
+    @staticmethod
+    def pcr_indice_analysis():
+        pcr_anal_result = {}
+        indices = ["NIFTY", "BANKNIFTY"]
+
+        for symbol in indices:
+            try:
+                pcr_value = PCR.pcr_indice_scraper(symbol)
+            except Exception as e:
+                print(f"Error fetching PCR for {symbol}: {e}")
+                return {"error": f"Failed to fetch PCR for {symbol}"}
+
+            state = SentimentAnalyzer.get_state(pcr_value, [1.4, 1.19, 1, 0.91, 0.6])
+            pcr_anal_result[symbol] = [state, pcr_value]
+
+        return pcr_anal_result
+
+    @staticmethod
+    def pcr_stocks_analysis(symbol):
+        try:
+            pcr_anal_result = {}
+            pcr_value = PCR.pcr_stocks_scraper(symbol)
         except Exception as e:
             print(f"Error fetching PCR for {symbol}: {e}")
             return {"error": f"Failed to fetch PCR for {symbol}"}
 
-        state = get_state(pcr_value, [1.4, 1.19, 1, 0.91, 0.6])
+        state = SentimentAnalyzer.get_state(pcr_value, [1, 0.75, 0.50, 0.4])
         pcr_anal_result[symbol] = [state, pcr_value]
 
-    return pcr_anal_result
+        return pcr_anal_result
 
-
-def pcr_stocks_analysis(symbol):
-    try:
-        pcr_anal_result = {}
-        pcr_value = pcr_stocks_scraper(symbol)
-    except Exception as e:
-        print(f"Error fetching PCR for {symbol}: {e}")
-        return {"error": f"Failed to fetch PCR for {symbol}"}
-
-    state = get_state(pcr_value, [1, 0.75, 0.50, 0.4])
-    pcr_anal_result[symbol] = [state, pcr_value]
-
-    return pcr_anal_result
-
-
-def get_state(pcr_value, thresholds):
-    for threshold, label in zip(thresholds, ["Overbought", "Slightly overbought", "Neutral", "Slightly oversold"]):
-        if pcr_value >= threshold:
-            return label
-
-    return "Oversold"
+    @staticmethod
+    def get_state(pcr_value, thresholds):
+        for threshold, label in zip(thresholds, ["Overbought", "Slightly overbought", "Neutral", "Slightly oversold"]):
+            if pcr_value >= threshold:
+                return label
+        return "Oversold"
