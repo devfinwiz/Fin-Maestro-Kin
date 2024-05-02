@@ -59,7 +59,7 @@ docker pull devfinwiz24/fin-maestro-kin:latest
 ```
 2. **Run the Docker Container:** After pulling the image, run the Docker container using the following command:
 ```
-docker run -d -p 8000:8000 devfinwiz24/fin-maestro-kin:latest
+docker run -d -p 8000:8000 -p 6379:6379 -v redis-cache:/redis-cache devfinwiz24/fin-maestro-kin:latest
 ```
 This command pulls the latest version of the Docker image from Docker Hub and runs it in a detached mode (`-d`) while mapping port 8000 of the host machine to port 8000 of the container (`-p 8000:8000`).
 
