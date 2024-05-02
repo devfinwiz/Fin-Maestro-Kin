@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fin-maestro-kin"
-version = "0.2.6"
+version = "0.3.0"
 description = "Seamless Finance: Docker Deployed APIs for Smart Investments."
 authors = ["DEV_FINWIZ <devjuneja43@gmail.com>"]
 license = "MIT"
@@ -17,6 +17,7 @@ matplotlib = "^3.8.2"
 pandas = "^2.1.4"
 numpy = "^1.26.3"
 beautifulsoup4 = "^4.12.3"
+redis = "^5.0.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.1.1"
