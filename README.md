@@ -74,7 +74,10 @@ This command pulls the latest version of the Docker image from Docker Hub and ru
 
 2. **Run the Docker Container:**
    - Once the image is pulled, navigate to the "Containers/Apps" section in Docker Desktop.
-   - Click on "Run" and configure the container settings, such as container name(optional), port mapping (mandatory - 8000 for example).
+   - Click on "Run" and configure the container settings:
+     - Container name (optional).
+     - Port mapping: Expose port 8000 for accessing the application and port 6379 for Redis caching.
+     - Volume mapping: Create a volume named "redis-cache" and mount it to the "/redis-cache" directory in the container.
    - Start the container to launch the application.
 
 3. **Access the Application:**
