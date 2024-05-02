@@ -377,7 +377,7 @@ class NSEIndices(Helper):
         end_date = datetime.datetime.strptime(end_date, "%d-%b-%Y").strftime("%d %b %Y")
         
         data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}'}}"}
-        payload = requests.post('https://niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', headers=self.niftyindices_headers,  json=data).json()
+        payload = requests.post('https://niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', headers=self.niftyindices_headers, json=data).json()
         payload = json.loads(payload["d"])
         
         if not payload:
@@ -403,7 +403,7 @@ class NSEIndices(Helper):
         end_date = datetime.datetime.strptime(end_date, "%d-%b-%Y").strftime("%d %b %Y")
         
         data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}'}}"}
-        payload = requests.post('https://niftyindices.com/Backpage.aspx/getTotalReturnIndexString', headers=self.niftyindices_headers,  json=data).json()
+        payload = requests.post('https://niftyindices.com/Backpage.aspx/getTotalReturnIndexString', headers=self.niftyindices_headers, json=data).json()
         payload = json.loads(payload["d"])
         
         if not payload:

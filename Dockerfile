@@ -24,8 +24,6 @@ EXPOSE 6379
 ENV REDIS_HOST=localhost
 ENV REDIS_PORT=6379
 
-COPY entrypoint.sh /usr/local/bin/
-
 WORKDIR /app/fin_maestro_kin
 
 RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/shutdown.sh
