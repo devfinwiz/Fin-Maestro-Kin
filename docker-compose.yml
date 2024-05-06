@@ -1,0 +1,8 @@
+services:
+    fin-maestro-kin:
+        ports:
+            - 8000:8000
+            - 6379:6379
+        volumes:
+            - ./redis-cache:/redis-cache
+        image: devfinwiz24/fin-maestro-kin:latest
