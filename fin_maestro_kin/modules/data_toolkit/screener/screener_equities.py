@@ -14,7 +14,7 @@ class Helper:
         for report in reports:
             label = report.get("")
             if label:
-                formatted_label = label.replace('+', '').strip()
+                formatted_label = label.replace('+', '').replace('%','').replace(',','').strip()
                 formatted_reports[formatted_label] = {key: value for key, value in report.items() if key != ""}
         return {'symbol': stock_name, key: formatted_reports}
     
