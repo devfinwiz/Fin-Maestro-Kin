@@ -14,13 +14,14 @@ class Helper:
         for report in reports:
             label = report.get("")
             if label:
-                formatted_label = label.replace('+', '').replace('%','').replace(',','').strip()
-                formatted_reports[formatted_label] = {key: value for key, value in report.items() if key != ""}
+                formatted_label = label.replace('+', '').strip()
+                formatted_reports[formatted_label] = {key: value.replace('%','').replace(',','') for key, value in report.items() if key != ""}
+                print(formatted_reports[formatted_label])
         return {'symbol': stock_name, key: formatted_reports}
     
     @staticmethod
     def process_key_metrics_data(value):
-        return value.replace('\n', '').replace('\u20b9', '').replace('          ', '').replace('         ', '').replace('       ','').replace(' ','').replace(',','').replace('Cr.','Cr')
+        return value.replace('\n', '').replace('\u20b9', '').replace('          ', '').replace('         ', '').replace('       ','').replace(' ','').replace(',','').replace('Cr.','').replace('%','')
     
     @staticmethod
     def handle_key_metrics_response(response, company_code):
