@@ -32,4 +32,4 @@ RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/shutdown.sh
 
 RUN touch /var/log/redis/redis-server.log && chown redis:redis /var/log/redis/redis-server.log
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["bash", "/usr/local/bin/entrypoint.sh"]
