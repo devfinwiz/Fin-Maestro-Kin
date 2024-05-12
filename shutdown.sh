@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Function to stop Redis gracefully
 stop_redis() {
