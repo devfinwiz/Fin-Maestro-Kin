@@ -372,12 +372,12 @@ class NSEIndices(Helper):
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error fetching historical data: {e}")
         
-    def index_pe_pb_div(self, symbol, start_date, end_date):
+    def index_pe_pb_div(self, symbol, start_date, end_date, index_name):
         start_date = datetime.datetime.strptime(start_date, "%d-%b-%Y").strftime("%d %b %Y")
         end_date = datetime.datetime.strptime(end_date, "%d-%b-%Y").strftime("%d %b %Y")
         
-        data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}'}}"}
-        payload = requests.post('https://niftyindices.com/Backpage.aspx/getpepbHistoricaldataDBtoString', headers=self.niftyindices_headers, json=data).json()
+        data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}','indexName':'{index_name}'}}"}
+        payload = requests.post('https://niftyindices.com/Backpage.aspx/getHistoricaldatatabletoString', headers=self.niftyindices_headers, json=data).json()
         payload = json.loads(payload["d"])
         
         if not payload:
@@ -390,19 +390,20 @@ class NSEIndices(Helper):
         self,
         symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
         start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
-        end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
+        end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format"),
+        index_name: str = Query(..., title="Index Name", description="Nifty index name")
     ):
         try:
-            historical_ratios_data = self.index_pe_pb_div(symbol, start_date, end_date)
+            historical_ratios_data = self.index_pe_pb_div(symbol, start_date, end_date, index_name)
             return historical_ratios_data.to_dict(orient='records')
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
         
-    def index_total_returns(self, symbol,start_date,end_date):
+    def index_total_returns(self, symbol,start_date,end_date, index_name):
         start_date = datetime.datetime.strptime(start_date, "%d-%b-%Y").strftime("%d %b %Y")
         end_date = datetime.datetime.strptime(end_date, "%d-%b-%Y").strftime("%d %b %Y")
         
-        data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}'}}"}
+        data = {"cinfo": f"{{'name':'{symbol}','startDate':'{start_date}','endDate':'{end_date}','indexName':'{index_name}'}}"}
         payload = requests.post('https://niftyindices.com/Backpage.aspx/getTotalReturnIndexString', headers=self.niftyindices_headers, json=data).json()
         payload = json.loads(payload["d"])
         
@@ -416,10 +417,11 @@ class NSEIndices(Helper):
         self,
         symbol: str = Query(..., title="Symbol", description="Nifty indices symbol"),
         start_date: str = Query(..., title="Start Date", description="Start date for historical data in dd-mmm-yyyy format"),
-        end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format")
+        end_date: str = Query(..., title="End Date", description="End date for historical data in dd-mmm-yyyy format"),
+        index_name: str = Query(..., title="Index Name", description="Nifty index name")
     ):
         try:
-            historical_returns_data = self.index_total_returns(symbol, start_date, end_date)
+            historical_returns_data = self.index_total_returns(symbol, start_date, end_date, index_name)
             return historical_returns_data.to_dict(orient='records')
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
