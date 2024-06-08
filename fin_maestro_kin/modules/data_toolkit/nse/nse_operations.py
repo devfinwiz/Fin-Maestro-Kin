@@ -333,6 +333,21 @@ class Helper:
             processed_data.append(processed_entry)
         return processed_data
     
+    @staticmethod
+    def process_index_ratios(historical_data):
+        rounded_data = Helper.convert_dataframe_to_dict(historical_data)
+        processed_data = []
+        for entry in rounded_data:
+            processed_entry = {
+                "INDEX_NAME": entry["INDEX_NAME"],
+                "HistoricalDate": entry["HistoricalDate"],
+                "OPEN": entry["OPEN"],
+                "HIGH": entry["HIGH"],
+                "LOW": entry["LOW"],
+                "CLOSE": entry["CLOSE"],
+            }
+            processed_data.append(processed_entry)   
+        return processed_data
     
 class NSEIndices(Helper):
     def __init__(self):
@@ -395,7 +410,8 @@ class NSEIndices(Helper):
     ):
         try:
             historical_ratios_data = self.index_pe_pb_div(symbol, start_date, end_date, index_name)
-            return historical_ratios_data.to_dict(orient='records')
+            processed_data = self.process_index_ratios(historical_ratios_data)
+            return processed_data
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error fetching historical ratios data: {e}")
         
