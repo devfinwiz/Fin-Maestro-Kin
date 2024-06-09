@@ -339,16 +339,17 @@ class Helper:
         processed_data = []
         for entry in rounded_data:
             processed_entry = {
-                "INDEX_NAME": entry["INDEX_NAME"],
-                "HistoricalDate": entry["HistoricalDate"],
-                "OPEN": entry["OPEN"],
-                "HIGH": entry["HIGH"],
-                "LOW": entry["LOW"],
-                "CLOSE": entry["CLOSE"],
+                "index_name": entry["INDEX_NAME"],
+                "date": entry["HistoricalDate"],
+                "open": entry["OPEN"],
+                "high": entry["HIGH"],
+                "low": entry["LOW"],
+                "close": entry["CLOSE"],
             }
             processed_data.append(processed_entry)   
         return processed_data
     
+
 class NSEIndices(Helper):
     def __init__(self):
         self.router = APIRouter(tags=["NSE Indices"])
