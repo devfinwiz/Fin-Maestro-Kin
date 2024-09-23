@@ -776,18 +776,14 @@ class NSEEquities(Helper):
 
     def nse_equity_tickers(self):
         try:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            }
-            
-            indices = ['NIFTY 50', 'NIFTY NEXT 50', 'NIFTY 500', 'NIFTY MIDSMALLCAP 400']
+            indices = ['NIFTY 50', 'NIFTY NEXT 50', 'NIFTY 500']
             base_url = 'https://www.nseindia.com/api/equity-stockIndices?index='
             
             tickers = []
             
             for index in indices:
                 url = base_url + index.replace(' ', '%20')
-                response = requests.get(url, headers=headers)
+                response = self.fetch_data_from_nse(url)
                 response.raise_for_status()
                 data = response.json()
                 
