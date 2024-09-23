@@ -776,11 +776,28 @@ class NSEEquities(Helper):
 
     def nse_equity_tickers(self):
         try:
-            symbols = pd.read_csv('https://archives.nseindia.com/content/equities/EQUITY_L.csv')
-            tickers = symbols['SYMBOL'].tolist()
-            return tickers
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+            
+            indices = ['NIFTY 50', 'NIFTY NEXT 50', 'NIFTY 500', 'NIFTY MIDSMALLCAP 400']
+            base_url = 'https://www.nseindia.com/api/equity-stockIndices?index='
+            
+            tickers = []
+            
+            for index in indices:
+                url = base_url + index.replace(' ', '%20')
+                response = requests.get(url, headers=headers)
+                response.raise_for_status()
+                data = response.json()
+                
+                for stock in data['data']:
+                    tickers.append(stock['symbol'])
+            
+            return list(set(tickers))
+        
         except Exception as e:
-            return f"Error fetching equity tickers: {e}"
+            raise HTTPException(status_code=500, detail=f"Error fetching equity tickers: {e}")
 
     def get_nse_equity_tickers(self):
         return {"equity_tickers": self.nse_equity_tickers()}
