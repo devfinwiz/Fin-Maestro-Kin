@@ -26,4 +26,4 @@ jobs:
         sleep 10
 
     - name: Running Test Scenario
-      run: apidog run https://api.apidog.com/api/v1/projects/510040/api-test/ci-config/351847/detail?token=xv6eHjzKrHKGJua5udyuBk -r html,cli
+      run: apidog run https://api.apidog.com/api/v1/projects/510040/api-test/ci-config/361156/detail?token=xD0uXznFkeRqoPfNtQ3L1u -r html,cli
