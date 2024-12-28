@@ -2,7 +2,6 @@ import requests
 import json
 from datetime import datetime, time
 from fastapi import APIRouter, Query
-import redis
 
 class PCR():
     headers = {
@@ -12,55 +11,53 @@ class PCR():
     }
 
     @staticmethod
-    def is_market_hours():
-        current_time = datetime.now().time()
-        return (current_time >= time(9, 0) and current_time <= time(15, 30))
+    def fetch_data(url, symbol):
+        try:
+            session = requests.Session()
+            session.get("https://www.nseindia.com", headers=PCR.headers, timeout=10)
+            cookies = session.cookies
 
-    @staticmethod
-    def get_cache_expiry():
-        if PCR.is_market_hours():
-            return 900
-        return 86400 
+            response = session.get(url, headers=PCR.headers, cookies=cookies, timeout=10)
 
+            if response.headers.get("Content-Type") != "application/json; charset=utf-8":
+                raise ValueError(f"Unexpected content type: {response.headers.get('Content-Type')}")
+
+            return json.loads(response.content.decode('utf-8', errors='replace'))
+        except Exception as e:
+            print(f"Error fetching data for {symbol}: {e}")
+            return None
+        
     @staticmethod
     def pcr_indice_scraper(symbol):
-        cached_result = redis_client.get(f"pcr_indice_{symbol}")
-        if cached_result:
-            return json.loads(cached_result)
+        url = f'https://www.nseindia.com/api/option-chain-indices?symbol={symbol}'
+        data = PCR.fetch_data(url, symbol)
+        if not data:
+            return {"error": f"Failed to fetch PCR data for {symbol}"}
 
-        url = 'https://www.nseindia.com/api/option-chain-indices?symbol=' + symbol
-        request = requests.get("https://www.nseindia.com", timeout=10, headers=PCR.headers)
-        cookies = dict(request.cookies)
-        response = requests.get(url, headers=PCR.headers, cookies=cookies).content
-        data = json.loads(response.decode('utf-8'))
-        totCE = data['filtered']['CE']['totOI']
-        totPE = data['filtered']['PE']['totOI']
-        pcr = totPE / totCE
-        pcr = round(pcr, 3)
-
-        redis_client.setex(f"pcr_indice_{symbol}", PCR.get_cache_expiry(), json.dumps(pcr))
-
-        return pcr
+        try:
+            totCE = data['filtered']['CE']['totOI']
+            totPE = data['filtered']['PE']['totOI']
+            pcr = round(totPE / totCE, 3)
+            return pcr
+        except KeyError as e:
+            print(f"KeyError for {symbol}: {e}")
+            return {"error": f"Data structure error for {symbol}"}
 
     @staticmethod
     def pcr_stocks_scraper(symbol):
-        cached_result = redis_client.get(f"pcr_stocks_{symbol}")
-        if cached_result:
-            return json.loads(cached_result)
+        url = f'https://www.nseindia.com/api/option-chain-equities?symbol={symbol}'
+        data = PCR.fetch_data(url, symbol)
+        if not data:
+            return {"error": f"Failed to fetch PCR data for {symbol}"}
 
-        url = 'https://www.nseindia.com/api/option-chain-equities?symbol=' + symbol
-        request = requests.get("https://www.nseindia.com", timeout=10, headers=PCR.headers)
-        cookies = dict(request.cookies)
-        response = requests.get(url, headers=PCR.headers, cookies=cookies).content
-        data = json.loads(response.decode('utf-8'))
-        totCE = data['filtered']['CE']['totOI']
-        totPE = data['filtered']['PE']['totOI']
-        pcr = totPE / totCE
-        pcr = round(pcr, 3)
-
-        redis_client.setex(f"pcr_stocks_{symbol}", PCR.get_cache_expiry(), json.dumps(pcr))
-
-        return pcr
+        try:
+            totCE = data['filtered']['CE']['totOI']
+            totPE = data['filtered']['PE']['totOI']
+            pcr = round(totPE / totCE, 3)
+            return pcr
+        except KeyError as e:
+            print(f"KeyError for {symbol}: {e}")
+            return {"error": f"Data structure error for {symbol}"}
 
 
 class SentimentAnalyzer(PCR):
@@ -123,5 +120,3 @@ class SentimentAnalyzer(PCR):
             if pcr_value >= threshold:
                 return label
         return "Oversold"
-    
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
