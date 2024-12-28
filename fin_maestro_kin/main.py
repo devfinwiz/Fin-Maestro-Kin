@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request
 from starlette.responses import RedirectResponse
 from modules.sentiment_analysis.sentiment_analysis import SentimentAnalyzer
 from modules.trend_detector.trend_detector import TrendDetector
-from modules.data_toolkit.nse.nse_operations import  NSEIndices, NSEEquities
 from modules.data_toolkit.screener.screener_equities import ScreenerEquities
 
 app = FastAPI()
@@ -17,12 +16,6 @@ async def apidog_docs_redirect(request: Request, call_next):
 
 screener_eq = ScreenerEquities()
 screener_eq.register_routes(app)
-
-nse_eq = NSEEquities()
-nse_eq.register_routes(app)
-
-nse_indices = NSEIndices()
-nse_indices.register_routes(app)
 
 sentiment = SentimentAnalyzer()
 sentiment.register_routes(app)

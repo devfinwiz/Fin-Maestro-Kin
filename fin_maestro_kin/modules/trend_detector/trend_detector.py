@@ -6,31 +6,15 @@ import matplotlib
 import io
 import datetime as dt
 import warnings
-import redis
 
 warnings.filterwarnings("ignore")
 
 
-class Helper():
-    
-    @staticmethod
-    def calculate_cache_expiration():
-        next_update_time = dt.datetime.combine(dt.date.today(), dt.time(hour=17, minute=0))  
-
-        current_time = dt.datetime.now()
-        time_until_update = (next_update_time - current_time).total_seconds()
-
-        expiration_time = max(1, time_until_update) 
-        return expiration_time
-
-
-class TrendDetector(Helper):
+class TrendDetector():
     def __init__(self):
         self.router = APIRouter(tags=["Trend Detector"])
         matplotlib.use('Agg')
         plt.style.use('dark_background')
-        
-        self.redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
     def register_routes(self, app):
         self.router.add_api_route("/generate_plot", self.generate_plot, methods=["GET"])
@@ -69,23 +53,12 @@ class TrendDetector(Helper):
         ticker: str = Query(..., title="Ticker", description="Stock ticker symbol"),
         num_of_signals: int = Query(10, title="Num of Signals", description="Number of buy/sell signals to be plotted")
         ):
-        
-        cached_image = self.redis_client.get(f"plot_{ticker}")
-
-        if cached_image:
-            try:
-                cached_image_decoded = io.BytesIO(cached_image)
-                return StreamingResponse(content=cached_image_decoded, media_type="image/png")
-            except Exception as e:
-                print(f"Error decoding cached image: {e}")
 
         fig = self.signals_generator(ticker, num_of_signals)
 
         image_stream = io.BytesIO()
         fig.savefig(image_stream, format="png")
         image_stream.seek(0) 
-
-        self.redis_client.set(f"plot_{ticker}", image_stream.getvalue(), int(Helper.calculate_cache_expiration()))
         image_stream.seek(0) 
         
         return StreamingResponse(content=image_stream, media_type="image/png")

@@ -40,6 +40,7 @@ class Helper:
             book_value = float(data['Book Value'])
             data['Price to book'] = str(round(current_price / book_value, 2))
             return {'symbol': company_code, 'key_metrics': data}
+        
         elif response.status_code == 404:
             raise HTTPException(status_code=404, detail=f"No data found for the specified parameters.")
         else:
@@ -159,7 +160,7 @@ class ScreenerEquities(Helper):
             raise HTTPException(status_code=500, detail=f"Error fetching ratios data: {e}")
 
     def key_metrics(self, company_code):
-        url = f"https://www.screener.in/company/{company_code}/#top"
+        url = f"https://www.screener.in/company/{company_code}/consolidated"
         response = requests.get(url)
         return self.handle_key_metrics_response(response, company_code)
 
