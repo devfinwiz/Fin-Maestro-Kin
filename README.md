@@ -40,8 +40,6 @@
 
 - 📈**Perform Market Trend Analysis:** Uncover valuable insights and identify market trends with ease, guiding your investment decisions.
   
-- 📉**Evaluate Market Sentiment:** Gauge market sentiment to make informed investment decisions based on current market psychology.
-  
 - ⚡**Experience Lightning-Fast Performance:** Benefit from the performance and scalability of FastAPI for a seamless user experience.
   
 - 🔍**Craft Unparalleled Market Insights:** Build your own financial applications powered by Fin-Maestro-Kin, unlocking a deeper understanding of the market.
