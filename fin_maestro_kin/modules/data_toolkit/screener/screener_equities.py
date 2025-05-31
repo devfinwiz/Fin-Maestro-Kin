@@ -38,7 +38,7 @@ class Helper:
 
             current_price = float(data['Current Price'])
             book_value = float(data['Book Value'])
-            data['Price to book'] = str(round(current_price / book_value, 2))
+            data['Price/Book'] = str(round(current_price / book_value, 2))
             return {'symbol': company_code, 'key_metrics': data}
         
         elif response.status_code == 404:

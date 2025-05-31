@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from starlette.responses import RedirectResponse
 from modules.trend_detector.trend_detector import TrendDetector
 from modules.data_toolkit.screener.screener_equities import ScreenerEquities
+from modules.valuation_determiner.valuations import ValuationEngine
 
 app = FastAPI()
 
@@ -18,3 +19,6 @@ screener_eq.register_routes(app)
 
 trend = TrendDetector()
 trend.register_routes(app)
+
+valuation = ValuationEngine()
+valuation.register_routes(app)
