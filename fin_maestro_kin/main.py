@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Request
 from starlette.responses import RedirectResponse
-from modules.sentiment_analysis.sentiment_analysis import SentimentAnalyzer
 from modules.trend_detector.trend_detector import TrendDetector
 from modules.data_toolkit.screener.screener_equities import ScreenerEquities
+from modules.valuation_determiner.valuations import ValuationEngine
 
 app = FastAPI()
 
@@ -17,8 +17,8 @@ async def apidog_docs_redirect(request: Request, call_next):
 screener_eq = ScreenerEquities()
 screener_eq.register_routes(app)
 
-sentiment = SentimentAnalyzer()
-sentiment.register_routes(app)
-
 trend = TrendDetector()
 trend.register_routes(app)
+
+valuation = ValuationEngine()
+valuation.register_routes(app)
