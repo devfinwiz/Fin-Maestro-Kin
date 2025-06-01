@@ -6,5 +6,8 @@ ENDPOINTS = [
     '/screener-equities/balance-sheet?symbol=vedl',
     '/screener-equities/annual-profit-loss?symbol=vedl',
     '/screener-equities/ratios?symbol=vedl',
-    '/screener-equities/key-metrics?symbol=vedl'
+    '/screener-equities/key-metrics?symbol=vedl',
+    '/valuations/get-valuation-verdict?symbol=ABSLAMC',
+    '/valuations/earnings?symbol=ARIHANTCAP',
+    '/valuations/graham-number?symbol=ARIHANTCAP'
 ]

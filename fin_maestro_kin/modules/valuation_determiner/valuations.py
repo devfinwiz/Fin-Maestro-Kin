@@ -61,8 +61,8 @@ class ValuationEngine:
     def get_valuation_by_earnings(self, symbol: str = Query(..., title="Symbol", description="Stock symbol")):
         try:
             value_as_per_earnings, value_earnings_q4, ltp = self.compute_earnings_valuation(symbol)
-            bull_case_valuation = max(value_as_per_earnings, value_earnings_q4) 
-            base_case_valuation = min(value_as_per_earnings, value_earnings_q4)
+            bull_case_valuation = round(max(value_as_per_earnings, value_earnings_q4), 2) 
+            base_case_valuation = round(min(value_as_per_earnings, value_earnings_q4), 2)
 
             if bull_case_valuation == -1:
                 return JSONResponse(content={
@@ -93,7 +93,7 @@ class ValuationEngine:
             data = json.loads(response.body)
             earnings_valuation_bull = data.get("bull_case_value", 0)
             earnings_valuation_base = data.get("base_case_value", 0)
-            valuation_as_per_earnings = data.get("valuation_as_per_earnings", 0)
+            valuation_as_per_earnings = round(data.get("valuation_as_per_earnings", 0), 2)
             current_price = data.get("current_price", 0)
             symbol = data.get("symbol", "")
 
